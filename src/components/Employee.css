@@ -1,0 +1,14 @@
+.section-1,
+.section-2 {
+  display: flex;
+  flex-direction: column;
+}
+.text-box {
+  padding: 10px;
+  border-radius: 5px;
+  border: solid 1px #cadbf3;
+}
+.text-box:focus {
+  outline-width: thin;
+  outline-color: #3283fc;
+}

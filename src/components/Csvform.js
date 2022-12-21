@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Employeeservices from "../Services/Employeeservices";
 import { CSVLink } from "react-csv";
-function Csvform() {
+function Csvform({ setShowResults, setPassword, setEmail }) {
   const [employees, setEmployees] = useState([]);
   const header = [
     { label: "Account", key: "Account" },
@@ -28,7 +28,9 @@ function Csvform() {
   useEffect(() => {
     Employeeservices.getEmployees()
       .then((success) => setEmployees(success.data))
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
   return (
     <div className="mt-3">
@@ -36,6 +38,18 @@ function Csvform() {
       <CSVLink {...csvReport} className="btn btn-success">
         Export to CSV
       </CSVLink>
+      <br></br>
+      <button
+        type="button"
+        class="btn btn-primary mt-3"
+        onClick={() => {
+          setShowResults(false);
+          setPassword("");
+          setEmail("");
+        }}
+      >
+        Log Out
+      </button>
     </div>
   );
 }

@@ -7,7 +7,7 @@ function Navbar() {
         <li class="nav-item">
           <a
             class="nav-link"
-            style={{ fontSize: "40px", color: "white" }}
+            style={{ fontSize: "2rem", color: "white" }}
             href="/"
           >
             POM
@@ -16,8 +16,8 @@ function Navbar() {
         <li class="nav-item">
           <a
             class="nav-link"
-            style={{ fontSize: "40px", color: "white" }}
-            href="employee"
+            style={{ fontSize: "2rem", color: "white" }}
+            href="employeesection"
           >
             Employee
           </a>

@@ -16,7 +16,7 @@ function POM() {
     }
   };
   return (
-    <div className="container mt-5">
+    <div className="container p-5" style={{ background: "#f0f2f5" }}>
       <form>
         <div class="form-group mb-3">
           <label
@@ -62,7 +62,15 @@ function POM() {
         </button>
         <br></br>
         <span style={{ color: "red" }}>{span}</span>
-        <div>{showResults ? <Csvform /> : null}</div>
+        <div>
+          {showResults ? (
+            <Csvform
+              setShowResults={setShowResults}
+              setEmail={setEmail}
+              setPassword={setPassword}
+            />
+          ) : null}
+        </div>
       </form>
     </div>
   );

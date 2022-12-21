@@ -1,16 +1,17 @@
 import axios from "axios";
 
+const baseurl =
+  "https://0fryeoj2d7.execute-api.ap-south-1.amazonaws.com/employeedetails/";
 class Employeeservices {
   getEmployees() {
-    return axios.get(
-      "https://gqdo0tn2dh.execute-api.ap-south-1.amazonaws.com/emp"
-    );
+    return axios.get(baseurl);
   }
-  addEmployees(emp) {
-    return axios.post(
-      "https://tkblde9dkd.execute-api.ap-south-1.amazonaws.com/emp/",
-      emp
-    );
+  addemployee(emp) {
+    return axios.post(baseurl, emp);
+  }
+
+  getEmployeebyid(bookid) {
+    return axios.get(baseurl + "employeegetbyid?id=" + bookid);
   }
 }
 export default new Employeeservices();
