@@ -10,7 +10,7 @@ function Navbar() {
             style={{ fontSize: "2rem", color: "white" }}
             href="/"
           >
-            POM
+            PMO
           </a>
         </li>
         <li class="nav-item">

@@ -27,7 +27,6 @@ function Employee() {
       Employeeservices.getEmployeebyid(updatevalue)
         .then((success) => {
           redirect();
-          // setUpdatevalue("");
         })
         .catch((error) =>
           setValidationspan(

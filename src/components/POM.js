@@ -7,7 +7,7 @@ function POM() {
   const [password, setPassword] = useState("");
   const [span, setSpan] = useState("");
   const validation = () => {
-    if (email === "Pom@gmail.com" && password === "Pom@123") {
+    if (email === "Pmo@gmail.com" && password === "Pmo@123") {
       setSpan("");
       setShowResults(true);
     } else {
@@ -33,7 +33,7 @@ function POM() {
             class="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
-            placeholder="Enter POM email"
+            placeholder="Enter PMO email"
           />
         </div>
         <div class="form-group mb-3">

@@ -23,6 +23,7 @@ function Form() {
   const [totalcost, setTotalcost] = useState("");
   const [commentsifany, setcommentsifany] = useState("");
   const [emp, setEmp] = useState([]);
+  const [empidnav, setEmpidnav] = useState("");
   const navigate = useNavigate();
   const redirect = () => {
     navigate("/employeesection");
@@ -135,7 +136,25 @@ function Form() {
       return <h2 className="text-center">Employee Details add Form</h2>;
     }
   };
-
+  const getdetails = (id) => {
+    if (id.length > 0) {
+      Employeeservices.geteid(id)
+        .then((success) => {
+          setAccount(success.data.Account);
+          setProject(success.data["Project/Contract"]);
+          setEmpname(success.data["Emp Name"]);
+          setEmpidnav("");
+        })
+        .catch((error) => {
+          setEmpidnav("Empid Not found");
+          setAccount("");
+          setProject("");
+          setEmpname("");
+        });
+    } else {
+      setEmpidnav("");
+    }
+  };
   return (
     <>
       <div
@@ -213,6 +232,7 @@ function Form() {
                   class="form-control"
                   id="account"
                   placeholder="Account"
+                  disabled
                 />
               </div>
             </div>
@@ -231,6 +251,7 @@ function Form() {
                   class="form-control"
                   id="project"
                   placeholder="Project/Contract"
+                  disabled
                 />
               </div>
             </div>
@@ -244,12 +265,16 @@ function Form() {
               <div class="col-md-10 col-sm-10">
                 <input
                   value={empid}
-                  onChange={(e) => setEmpid(e.target.value)}
+                  onChange={(e) => {
+                    setEmpid(e.target.value);
+                  }}
+                  onKeyUp={(e) => getdetails(e.target.value)}
                   type="text"
                   class="form-control"
                   id="empid"
                   placeholder="Emp ID"
                 />
+                <span style={{ color: "red" }}>{empidnav}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -267,6 +292,7 @@ function Form() {
                   class="form-control"
                   id="empname"
                   placeholder="Employee Name"
+                  disabled
                 />
               </div>
             </div>
