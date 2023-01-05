@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Employeeservices from "../Services/Employeeservices";
 import { CSVLink } from "react-csv";
+
 function Csvform({ setShowResults, setPassword, setEmail }) {
+  const [startdate, setStartdate] = useState("");
+  const [enddate, setEnddate] = useState("");
   const [employees, setEmployees] = useState([]);
   const header = [
     { label: "Account", key: "Account" },
@@ -25,6 +28,17 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
     headers: header,
     data: employees,
   };
+  const filterfunction = (e) => {
+    e.preventDefault();
+    console.log(startdate);
+    console.log(enddate);
+    Employeeservices.getfiltereddata(startdate, enddate)
+      .then((success) => setEmployees(success.data))
+      .catch((error) => console.log(error));
+  };
+  const check = () => {
+    console.log(employees);
+  };
   useEffect(() => {
     Employeeservices.getEmployees()
       .then((success) => setEmployees(success.data))
@@ -35,10 +49,39 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
   return (
     <div className="mt-3">
       <h2>Click on below link to dwonload in csv format</h2>
+      <label>
+        Date from:
+        <input
+          type="date"
+          name="startdate"
+          value={startdate}
+          onChange={(e) => setStartdate(e.target.value)}
+        />
+      </label>
+      <label>
+        Date To:
+        <input
+          type="date"
+          name="enddate"
+          value={enddate}
+          onChange={(e) => setEnddate(e.target.value)}
+        />
+      </label>
+      <br></br>
+      <button type="button" onClick={(e) => filterfunction(e)}>
+        Set
+      </button>
+      <button type="button" onClick={() => check()}>
+        check
+      </button>
       <CSVLink {...csvReport} className="btn btn-success">
-        Export to CSV
+        Export All
+      </CSVLink>
+      <CSVLink {...csvReport} className="btn btn-success">
+        Export All
       </CSVLink>
       <br></br>
+
       <button
         type="button"
         class="btn btn-primary mt-3"
