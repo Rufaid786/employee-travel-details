@@ -6,6 +6,7 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
   const [startdate, setStartdate] = useState("");
   const [enddate, setEnddate] = useState("");
   const [employees, setEmployees] = useState([]);
+  const [filteredemployees, setFilteredemployees] = useState([]);
   const header = [
     { label: "Account", key: "Account" },
     { label: "Project/Contract", key: "Project/Contract" },
@@ -28,17 +29,23 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
     headers: header,
     data: employees,
   };
-  const filterfunction = (e) => {
-    e.preventDefault();
+  const filteredreport = {
+    filename: "Report.csv",
+    headers: header,
+    data: filteredemployees,
+  };
+
+  const filterfunction = (end) => {
+    setFilteredemployees("");
     console.log(startdate);
-    console.log(enddate);
-    Employeeservices.getfiltereddata(startdate, enddate)
-      .then((success) => setEmployees(success.data))
+    console.log(end);
+    Employeeservices.getfiltereddata(startdate, end)
+      .then((success) => {
+        setFilteredemployees(success.data);
+      })
       .catch((error) => console.log(error));
   };
-  const check = () => {
-    console.log(employees);
-  };
+
   useEffect(() => {
     Employeeservices.getEmployees()
       .then((success) => setEmployees(success.data))
@@ -48,40 +55,47 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
   }, []);
   return (
     <div className="mt-3">
-      <h2>Click on below link to dwonload in csv format</h2>
-      <label>
-        Date from:
-        <input
-          type="date"
-          name="startdate"
-          value={startdate}
-          onChange={(e) => setStartdate(e.target.value)}
-        />
-      </label>
-      <label>
-        Date To:
-        <input
-          type="date"
-          name="enddate"
-          value={enddate}
-          onChange={(e) => setEnddate(e.target.value)}
-        />
-      </label>
-      <br></br>
-      <button type="button" onClick={(e) => filterfunction(e)}>
-        Set
-      </button>
-      <button type="button" onClick={() => check()}>
-        check
-      </button>
-      <CSVLink {...csvReport} className="btn btn-success">
-        Export All
-      </CSVLink>
-      <CSVLink {...csvReport} className="btn btn-success">
-        Export All
-      </CSVLink>
-      <br></br>
+      <div style={{ display: "flex" }} className="mt-3">
+        <div className="col-md-6" style={{ marginLeft: "-15px" }}>
+          <h5>
+            Choose Your Date and click on export to download in csv format
+          </h5>
+          <label style={{ width: "50%" }}>
+            Date from:
+            <input
+              type="date"
+              name="startdate"
+              value={startdate}
+              style={{ marginLeft: "5px" }}
+              onChange={(e) => setStartdate(e.target.value)}
+            />
+          </label>
+          <label style={{ width: "50%" }}>
+            Date To:
+            <input
+              type="date"
+              name="enddate"
+              value={enddate}
+              style={{ marginLeft: "5px" }}
+              onChange={(e) => {
+                setEnddate(e.target.value);
+                filterfunction(e.target.value);
+              }}
+            />
+          </label>
+          <br></br>
 
+          <CSVLink {...filteredreport} className="btn btn-success">
+            Export
+          </CSVLink>
+        </div>
+        <div className="col-md-6">
+          <h5>Click on Export All to download All records in csv format</h5>
+          <CSVLink {...csvReport} className="btn btn-success">
+            Export All
+          </CSVLink>
+        </div>
+      </div>
       <button
         type="button"
         class="btn btn-primary mt-3"

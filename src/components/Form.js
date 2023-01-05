@@ -201,8 +201,6 @@ function Form() {
                 data-dismiss="modal"
                 onClick={(e) => {
                   saveEmployee(e);
-                  //refreshPage();
-                  //window.location.reload();
                 }}
               >
                 Ok
