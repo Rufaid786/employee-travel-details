@@ -56,7 +56,7 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
   return (
     <div className="mt-3">
       <div style={{ display: "flex" }} className="mt-3">
-        <div className="col-md-6" style={{ marginLeft: "-15px" }}>
+        <div className="col-md-6">
           <h5>
             Choose Your Date and click on export to download in csv format
           </h5>

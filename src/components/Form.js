@@ -4,7 +4,13 @@ import { v4 as uuidv4 } from "uuid";
 import { useRecoilValue } from "recoil";
 import { bookingid } from "./Employee";
 import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 function Form() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const bid = useRecoilValue(bookingid);
   const [id, setId] = useState("");
   const [account, setAccount] = useState("");
@@ -22,9 +28,14 @@ function Form() {
   const [othercost, setOthercost] = useState("");
   const [totalcost, setTotalcost] = useState("");
   const [commentsifany, setcommentsifany] = useState("");
-  const [validationspan, setValidationspan] = useState("");
+
   const [empidspan, setempidspan] = useState("");
   const [emp, setEmp] = useState([]);
+  const [purposeoftravelspan, setPurposeoftravelspan] = useState("");
+  const [travelfromspan, setTravelfromspan] = useState("");
+  const [traveltospan, setTraveltospan] = useState("");
+  const [datefromspan, setDatefromspan] = useState("");
+  const [datetospan, setDatetospan] = useState("");
   const [empidnav, setEmpidnav] = useState("");
   const navigate = useNavigate();
   const redirect = () => {
@@ -158,6 +169,23 @@ function Form() {
       setEmpidnav("");
     }
   };
+  const keyupvalidation = () => {
+    if (purposeoftravel) {
+      setPurposeoftravelspan("");
+    }
+    if (datefrom) {
+      setDatefromspan("");
+    }
+    if (dateto) {
+      setDatetospan("");
+    }
+    if (travelfrom) {
+      setTravelfromspan("");
+    }
+    if (travelto) {
+      setTraveltospan("");
+    }
+  };
   const validation = () => {
     if (
       empid === "" ||
@@ -168,66 +196,47 @@ function Form() {
       dateto === ""
     ) {
       setempidspan("This field is Required");
-      setValidationspan("This field is Required");
+      setPurposeoftravelspan("This field is Required");
+      setTravelfromspan("This field is Required");
+      setTraveltospan("This field is Required");
+      setDatefromspan("This field is Required");
+      setDatetospan("This field is Required");
     } else {
-      setValidationspan("");
-      alert("success");
+      setPurposeoftravelspan("");
+      setTravelfromspan("");
+      setTraveltospan("");
+      setDatefromspan("");
+      setDatetospan("");
+      handleShow();
     }
   };
   return (
     <>
-      <div
-        class="modal fade"
-        id="exampleModalCenter"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalCenterTitle"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h3 class="modal-title text-danger" id="exampleModalLongTitle">
-                Alert!!!
-              </h3>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body text-center" style={{ fontSize: "17px" }}>
-              Employee details Saved successfully with{" "}
-              <span style={{ fontSize: "18px", fontWeight: "bold" }}>
-                Booking ID:{id}
-              </span>
-              .Please keep this ID for future purpose
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                class="btn btn-success"
-                data-dismiss="modal"
-                onClick={(e) => {
-                  saveEmployee(e);
-                }}
-              >
-                Ok
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-danger">Alert!!!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          Employee details Saved successfully with{" "}
+          <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+            Booking ID:{id}
+          </span>
+          .Please keep this ID for future purpose
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            onClick={(e) => {
+              saveEmployee(e);
+            }}
+          >
+            Ok
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="container p-3" style={{ background: "#f0f2f5" }}>
         {title()}
 
@@ -330,8 +339,9 @@ function Form() {
                   class="form-control"
                   id="purposeoftravel"
                   placeholder="Purpose"
+                  onKeyUp={() => keyupvalidation()}
                 />
-                <span style={{ color: "red" }}>{validationspan}</span>
+                <span style={{ color: "red" }}>{purposeoftravelspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -350,8 +360,9 @@ function Form() {
                   class="form-control"
                   id="travelfrom"
                   placeholder="Travel From"
+                  onKeyUp={() => keyupvalidation()}
                 />
-                <span style={{ color: "red" }}>{validationspan}</span>
+                <span style={{ color: "red" }}>{travelfromspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -370,8 +381,9 @@ function Form() {
                   class="form-control"
                   id="travelto"
                   placeholder="Travel To"
+                  onKeyUp={() => keyupvalidation()}
                 />
-                <span style={{ color: "red" }}>{validationspan}</span>
+                <span style={{ color: "red" }}>{traveltospan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -385,13 +397,15 @@ function Form() {
               <div class="col-md-10 col-sm-10">
                 <input
                   value={datefrom}
-                  onChange={(e) => setDatefrom(e.target.value)}
+                  onChange={(e) => {
+                    setDatefrom(e.target.value);
+                    setDatefromspan(" ");
+                  }}
                   type="date"
                   class="form-control"
                   id="datefrom"
-                  placeholder="Travel To"
                 />
-                <span style={{ color: "red" }}>{validationspan}</span>
+                <span style={{ color: "red" }}>{datefromspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -405,13 +419,15 @@ function Form() {
               <div class="col-md-10 col-sm-10">
                 <input
                   value={dateto}
-                  onChange={(e) => setDateto(e.target.value)}
+                  onChange={(e) => {
+                    setDateto(e.target.value);
+                    setDatetospan(" ");
+                  }}
                   type="Date"
                   class="form-control"
                   id="dateto"
-                  placeholder="Travel To"
                 />
-                <span style={{ color: "red" }}>{validationspan}</span>
+                <span style={{ color: "red" }}>{datetospan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -531,15 +547,14 @@ function Form() {
             </div>
             <div class="form-group row mb-3">
               <div class="offset-md-2 col-md-2 mt-3">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  onClick={() => validation()}
-                  // data-toggle="modal"
-                  // data-target="#exampleModalCenter"
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    validation();
+                  }}
                 >
                   Submit
-                </button>
+                </Button>
               </div>
               <div class="offset-md-6 col-md-2 mt-3">
                 <button
