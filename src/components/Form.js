@@ -22,6 +22,8 @@ function Form() {
   const [othercost, setOthercost] = useState("");
   const [totalcost, setTotalcost] = useState("");
   const [commentsifany, setcommentsifany] = useState("");
+  const [validationspan, setValidationspan] = useState("");
+  const [empidspan, setempidspan] = useState("");
   const [emp, setEmp] = useState([]);
   const [empidnav, setEmpidnav] = useState("");
   const navigate = useNavigate();
@@ -137,6 +139,7 @@ function Form() {
     }
   };
   const getdetails = (id) => {
+    setempidspan("");
     if (id.length > 0) {
       Employeeservices.geteid(id)
         .then((success) => {
@@ -153,6 +156,22 @@ function Form() {
         });
     } else {
       setEmpidnav("");
+    }
+  };
+  const validation = () => {
+    if (
+      empid === "" ||
+      purposeoftravel === "" ||
+      travelfrom === "" ||
+      travelto === "" ||
+      datefrom === "" ||
+      dateto === ""
+    ) {
+      setempidspan("This field is Required");
+      setValidationspan("This field is Required");
+    } else {
+      setValidationspan("");
+      alert("success");
     }
   };
   return (
@@ -258,7 +277,7 @@ function Form() {
                 for="inputPassword"
                 class="col-md-2 col-sm-2 col-form-label text-center"
               >
-                Emp ID
+                Emp ID<span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
               <div class="col-md-10 col-sm-10">
                 <input
@@ -273,6 +292,7 @@ function Form() {
                   placeholder="Emp ID"
                 />
                 <span style={{ color: "red" }}>{empidnav}</span>
+                <span style={{ color: "red" }}>{empidspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -300,6 +320,7 @@ function Form() {
                 class="col-md-2 col-sm-2 col-form-label text-center"
               >
                 Purose of Travel
+                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
               <div class="col-md-10 col-sm-10">
                 <input
@@ -310,6 +331,7 @@ function Form() {
                   id="purposeoftravel"
                   placeholder="Purpose"
                 />
+                <span style={{ color: "red" }}>{validationspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -318,6 +340,7 @@ function Form() {
                 class="col-md-2 col-sm-2 col-form-label text-center"
               >
                 Travel From
+                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
               <div class="col-md-10 col-sm-10">
                 <input
@@ -328,6 +351,7 @@ function Form() {
                   id="travelfrom"
                   placeholder="Travel From"
                 />
+                <span style={{ color: "red" }}>{validationspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -336,6 +360,7 @@ function Form() {
                 class="col-md-2 col-sm-2 col-form-label text-center"
               >
                 Travel To
+                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
               <div class="col-md-10 col-sm-10">
                 <input
@@ -346,6 +371,7 @@ function Form() {
                   id="travelto"
                   placeholder="Travel To"
                 />
+                <span style={{ color: "red" }}>{validationspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -354,6 +380,7 @@ function Form() {
                 class="col-md-2 col-sm-2 col-form-label text-center"
               >
                 Date From
+                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
               <div class="col-md-10 col-sm-10">
                 <input
@@ -364,6 +391,7 @@ function Form() {
                   id="datefrom"
                   placeholder="Travel To"
                 />
+                <span style={{ color: "red" }}>{validationspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -372,6 +400,7 @@ function Form() {
                 class="col-md-2 col-sm-2 col-form-label text-center"
               >
                 Date To
+                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
               <div class="col-md-10 col-sm-10">
                 <input
@@ -382,6 +411,7 @@ function Form() {
                   id="dateto"
                   placeholder="Travel To"
                 />
+                <span style={{ color: "red" }}>{validationspan}</span>
               </div>
             </div>
             <div class="form-group row mb-3">
@@ -504,8 +534,9 @@ function Form() {
                 <button
                   type="button"
                   class="btn btn-primary"
-                  data-toggle="modal"
-                  data-target="#exampleModalCenter"
+                  onClick={() => validation()}
+                  // data-toggle="modal"
+                  // data-target="#exampleModalCenter"
                 >
                   Submit
                 </button>
