@@ -6,6 +6,7 @@ import { bookingid } from "./Employee";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import "./Form.css";
 function Form() {
   const [show, setShow] = useState(false);
 
@@ -239,7 +240,7 @@ function Form() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="container p-3" style={{ background: "#f0f2f5" }}>
+      <div className="container" style={{ background: "#f0f2f5" }}>
         {title()}
 
         <br></br>
@@ -432,14 +433,18 @@ function Form() {
                 <span style={{ color: "red" }}>{datetospan}</span>
               </div>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
+            <div class="form-group row  cost-section">
+              <header
+                className="col-md-12 p-2"
+                style={{ backgroundColor: "rgb(33 112 229)" }}
               >
-                Flight
-              </label>
-              <div class="col-md-10 col-sm-10">
+                <span style={{ fontSize: "1.5rem", color: "white" }}>
+                  Cost Estimation
+                </span>
+              </header>
+              <div class="form-group p-2 col-md-6 col-sm-10">
+                <label for="flightcost">Flight</label>
+
                 <input
                   value={flight}
                   onChange={(e) => setFlight(e.target.value)}
@@ -450,15 +455,9 @@ function Form() {
                   placeholder="Flight Cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Hotac
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group p-2 col-md-6 col-sm-10">
+                <label for="Hotaccost">Hotac</label>
+
                 <input
                   value={hotac}
                   onChange={(e) => setHotac(e.target.value)}
@@ -469,15 +468,9 @@ function Form() {
                   placeholder="Hotac cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Perdium
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group p-2 col-md-6 col-sm-10">
+                <label for="perdiumcost">Perdium</label>
+
                 <input
                   value={perdiem}
                   onChange={(e) => setPerdium(e.target.value)}
@@ -488,15 +481,9 @@ function Form() {
                   placeholder="Perdium cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Other cost
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group p-2 col-md-6 col-sm-10">
+                <label for="othercost">Other cost</label>
+
                 <input
                   value={othercost}
                   onChange={(e) => setOthercost(e.target.value)}
@@ -507,15 +494,9 @@ function Form() {
                   placeholder="Other cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center align-items-center"
-              >
-                Total Cost
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group p-2 mb-2 col-md-3 col-sm-10">
+                <label for="totalcost">Total Cost</label>
+
                 <input
                   type="text"
                   class="form-control"
@@ -525,16 +506,17 @@ function Form() {
                 />
               </div>
             </div>
-            <div class="form-group row mb-3">
+
+            <div class="form-group mt-3 row mb-3">
               <label
                 for="comments"
                 class="col-md-2 col-sm-2 col-form-label text-center"
               >
                 Comments if Any:
               </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  type="text"
+              <div class="col-md-4 col-sm-10">
+                <textarea
+                  rows="5"
                   class="form-control"
                   id="commentsifany"
                   value={commentsifany}
@@ -542,7 +524,7 @@ function Form() {
                 />
               </div>
             </div>
-            <div class="form-group row mb-3">
+            <div class="form-group row pb-5">
               <div class="offset-md-2 col-md-2 mt-3">
                 <Button
                   variant="primary"
