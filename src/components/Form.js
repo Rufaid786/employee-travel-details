@@ -187,26 +187,28 @@ function Form() {
     }
   };
   const validation = () => {
+    empid === "" ? setempidspan("This field is Required") : setempidspan("");
+    purposeoftravel === ""
+      ? setPurposeoftravelspan("This field is Required")
+      : setPurposeoftravelspan("");
+    travelfrom === ""
+      ? setTravelfromspan("This field is Required")
+      : setTravelfromspan("");
+    travelto === ""
+      ? setTraveltospan("This field is Required")
+      : setTraveltospan("");
+    datefrom === ""
+      ? setDatefromspan("This field is Required")
+      : setDatetospan("");
+    dateto === "" ? setDatetospan("This field is Required") : setDatetospan("");
     if (
-      empid === "" ||
-      purposeoftravel === "" ||
-      travelfrom === "" ||
-      travelto === "" ||
-      datefrom === "" ||
-      dateto === ""
+      empid !== "" &&
+      purposeoftravel !== "" &&
+      travelfrom !== "" &&
+      travelto !== "" &&
+      datefrom !== "" &&
+      dateto !== ""
     ) {
-      setempidspan("This field is Required");
-      setPurposeoftravelspan("This field is Required");
-      setTravelfromspan("This field is Required");
-      setTraveltospan("This field is Required");
-      setDatefromspan("This field is Required");
-      setDatetospan("This field is Required");
-    } else {
-      setPurposeoftravelspan("");
-      setTravelfromspan("");
-      setTraveltospan("");
-      setDatefromspan("");
-      setDatetospan("");
       handleShow();
     }
   };
@@ -441,6 +443,7 @@ function Form() {
                 <input
                   value={flight}
                   onChange={(e) => setFlight(e.target.value)}
+                  onKeyUp={() => findsum()}
                   type="text"
                   class="form-control"
                   id="flight"
@@ -459,6 +462,7 @@ function Form() {
                 <input
                   value={hotac}
                   onChange={(e) => setHotac(e.target.value)}
+                  onKeyUp={() => findsum()}
                   type="text"
                   class="form-control"
                   id="hotac"
@@ -477,6 +481,7 @@ function Form() {
                 <input
                   value={perdiem}
                   onChange={(e) => setPerdium(e.target.value)}
+                  onKeyUp={() => findsum()}
                   type="text"
                   class="form-control"
                   id="perdium"
@@ -495,6 +500,7 @@ function Form() {
                 <input
                   value={othercost}
                   onChange={(e) => setOthercost(e.target.value)}
+                  onKeyUp={() => findsum()}
                   type="text"
                   class="form-control"
                   id="othercost"
@@ -515,16 +521,7 @@ function Form() {
                   class="form-control"
                   id="totalcost"
                   value={totalcost}
-                />
-              </div>
-            </div>
-            <div class="form-group row mb-3">
-              <div class="offset-md-2 col-md-2 col-sm-12">
-                <input
-                  type="button"
-                  value="Find Total cost"
-                  class="btn btn-primary"
-                  onClick={() => findsum()}
+                  disabled
                 />
               </div>
             </div>
