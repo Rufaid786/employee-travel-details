@@ -1,5 +1,4 @@
 .cost-section {
   background: white;
-
-  padding: 0;
+  box-sizing: content-box;
 }

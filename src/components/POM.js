@@ -16,7 +16,7 @@ function POM() {
     }
   };
   return (
-    <div className="container p-5" style={{ background: "#f0f2f5" }}>
+    <div className="p-5" style={{ background: "#f0f2f5" }}>
       <form>
         <div class="form-group mb-3">
           <label
