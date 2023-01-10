@@ -6,6 +6,7 @@ import { bookingid } from "./Employee";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import "./Form.css";
 function Form() {
   const [show, setShow] = useState(false);
 
@@ -38,6 +39,7 @@ function Form() {
   const [datetospan, setDatetospan] = useState("");
   const [empidnav, setEmpidnav] = useState("");
   const navigate = useNavigate();
+
   const redirect = () => {
     navigate("/employeesection");
   };
@@ -46,6 +48,7 @@ function Form() {
       setId(bid);
       Employeeservices.getEmployeebyid(bid)
         .then((success) => {
+          console.log(success);
           setAccount(success.data.Account);
           setProject(success.data["Project/Contract"]);
           setEmpid(success.data["Emp ID"]);
@@ -70,8 +73,7 @@ function Form() {
   }, []);
 
   const findsum = () => {
-    let req =
-      Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
+    let req = flight + hotac + perdiem + othercost;
     setTotalcost(req);
   };
   const saveEmployee = (e) => {
@@ -149,6 +151,21 @@ function Form() {
       return <h2 className="text-center">Employee Details add Form</h2>;
     }
   };
+  const alertwindow = () => {
+    if (bid) {
+      return (
+        <span style={{ fontSize: "18px" }}>
+          Are you sure you want to update the information?
+        </span>
+      );
+    } else {
+      return (
+        <span style={{ fontSize: "18px" }}>
+          Are you sure you want to Book a ticket?
+        </span>
+      );
+    }
+  };
   const getdetails = (id) => {
     setempidspan("");
     if (id.length > 0) {
@@ -187,48 +204,45 @@ function Form() {
     }
   };
   const validation = () => {
+    empid === "" ? setempidspan("This field is Required") : setempidspan("");
+    purposeoftravel === ""
+      ? setPurposeoftravelspan("This field is Required")
+      : setPurposeoftravelspan("");
+    travelfrom === ""
+      ? setTravelfromspan("This field is Required")
+      : setTravelfromspan("");
+    travelto === ""
+      ? setTraveltospan("This field is Required")
+      : setTraveltospan("");
+    datefrom === ""
+      ? setDatefromspan("This field is Required")
+      : setDatetospan("");
+    dateto === "" ? setDatetospan("This field is Required") : setDatetospan("");
     if (
-      empid === "" ||
-      purposeoftravel === "" ||
-      travelfrom === "" ||
-      travelto === "" ||
-      datefrom === "" ||
-      dateto === ""
+      empid !== "" &&
+      purposeoftravel !== "" &&
+      travelfrom !== "" &&
+      travelto !== "" &&
+      datefrom !== "" &&
+      dateto !== ""
     ) {
-      setempidspan("This field is Required");
-      setPurposeoftravelspan("This field is Required");
-      setTravelfromspan("This field is Required");
-      setTraveltospan("This field is Required");
-      setDatefromspan("This field is Required");
-      setDatetospan("This field is Required");
-    } else {
-      setPurposeoftravelspan("");
-      setTravelfromspan("");
-      setTraveltospan("");
-      setDatefromspan("");
-      setDatetospan("");
       handleShow();
     }
   };
+
   return (
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title className="text-danger">Alert!!!</Modal.Title>
+          <Modal.Title className="text-success">Alert!!!</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="text-center">
-          Employee details Saved successfully with{" "}
-          <span style={{ fontSize: "18px", fontWeight: "bold" }}>
-            Booking ID:{id}
-          </span>
-          .Please keep this ID for future purpose
-        </Modal.Body>
+        <Modal.Body className="text-center">{alertwindow()}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
           <Button
-            variant="primary"
+            variant="success"
             onClick={(e) => {
               saveEmployee(e);
             }}
@@ -237,336 +251,263 @@ function Form() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="container p-3" style={{ background: "#f0f2f5" }}>
+      <div className="p-3" style={{ background: "#f0f2f5" }}>
         {title()}
 
         <br></br>
-        <div className="card-body ml-3">
-          <form>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Account
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  type="text"
-                  value={account}
-                  onChange={(e) => setAccount(e.target.value)}
-                  class="form-control"
-                  id="account"
-                  placeholder="Account"
-                  disabled
-                />
-              </div>
+        <div className="card-body">
+          <div class="form-group row mb-3">
+            <div class="col-md-4 col-sm-10">
+              <label for="inputPassword">Account</label>
+
+              <input
+                type="text"
+                value={account}
+                onChange={(e) => setAccount(e.target.value)}
+                class="form-control"
+                id="account"
+                disabled
+              />
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Project/Contract
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={project}
-                  onChange={(e) => setProject(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="project"
-                  placeholder="Project/Contract"
-                  disabled
-                />
-              </div>
+            <div class="col-md-4 col-sm-10">
+              <label for="inputPassword">Project/Contract</label>
+
+              <input
+                value={project}
+                onChange={(e) => setProject(e.target.value)}
+                type="text"
+                class="form-control"
+                id="project"
+                disabled
+              />
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
+            <div class="col-md-4 col-sm-10">
+              <label for="inputPassword">
                 Emp ID<span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={empid}
-                  onChange={(e) => {
-                    setEmpid(e.target.value);
-                  }}
-                  onKeyUp={(e) => getdetails(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="empid"
-                  placeholder="Emp ID"
-                />
-                <span style={{ color: "red" }}>{empidnav}</span>
-                <span style={{ color: "red" }}>{empidspan}</span>
-              </div>
+
+              <input
+                value={empid}
+                onChange={(e) => {
+                  setEmpid(e.target.value);
+                }}
+                onKeyUp={(e) => getdetails(e.target.value)}
+                type="text"
+                class="form-control"
+                id="empid"
+                placeholder="Emp ID"
+              />
+              <span style={{ color: "red" }}>{empidnav}</span>
+              <span style={{ color: "red" }}>{empidspan}</span>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Emp Name
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={empname}
-                  onChange={(e) => setEmpname(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="empname"
-                  placeholder="Employee Name"
-                  disabled
-                />
-              </div>
+          </div>
+
+          <div class="form-group row mb-3">
+            <div class="col-md-4 col-sm-10">
+              <label for="empname">Emp Name</label>
+              <input
+                value={empname}
+                onChange={(e) => setEmpname(e.target.value)}
+                type="text"
+                class="form-control"
+                id="empname"
+                disabled
+              />
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
+            <div class="col-md-4 col-sm-10">
+              <label for="purposeoftravel">
                 Purose of Travel
                 <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={purposeoftravel}
-                  onChange={(e) => setPurposeoftravel(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="purposeoftravel"
-                  placeholder="Purpose"
-                  onKeyUp={() => keyupvalidation()}
-                />
-                <span style={{ color: "red" }}>{purposeoftravelspan}</span>
-              </div>
+
+              <input
+                value={purposeoftravel}
+                onChange={(e) => setPurposeoftravel(e.target.value)}
+                type="text"
+                class="form-control"
+                id="purposeoftravel"
+                placeholder="Purpose"
+                onKeyUp={() => keyupvalidation()}
+              />
+              <span style={{ color: "red" }}>{purposeoftravelspan}</span>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
+            <div class="col-md-4 col-sm-10">
+              <label for="travelfrom">
                 Travel From
                 <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={travelfrom}
-                  onChange={(e) => setTravelfrom(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="travelfrom"
-                  placeholder="Travel From"
-                  onKeyUp={() => keyupvalidation()}
-                />
-                <span style={{ color: "red" }}>{travelfromspan}</span>
-              </div>
+              <input
+                value={travelfrom}
+                onChange={(e) => setTravelfrom(e.target.value)}
+                type="text"
+                class="form-control"
+                id="travelfrom"
+                placeholder="Travel From"
+                onKeyUp={() => keyupvalidation()}
+              />
+              <span style={{ color: "red" }}>{travelfromspan}</span>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-4 col-sm-10">
+              <label for="travelto">
                 Travel To
                 <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={travelto}
-                  onChange={(e) => setTravelto(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="travelto"
-                  placeholder="Travel To"
-                  onKeyUp={() => keyupvalidation()}
-                />
-                <span style={{ color: "red" }}>{traveltospan}</span>
-              </div>
+
+              <input
+                value={travelto}
+                onChange={(e) => setTravelto(e.target.value)}
+                type="text"
+                class="form-control"
+                id="travelto"
+                placeholder="Travel To"
+                onKeyUp={() => keyupvalidation()}
+              />
+              <span style={{ color: "red" }}>{traveltospan}</span>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
+            <div class="col-md-4 col-sm-10">
+              <label for="datefrom">
                 Date From
                 <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={datefrom}
-                  onChange={(e) => {
-                    setDatefrom(e.target.value);
-                    setDatefromspan(" ");
-                  }}
-                  type="date"
-                  class="form-control"
-                  id="datefrom"
-                />
-                <span style={{ color: "red" }}>{datefromspan}</span>
-              </div>
+
+              <input
+                value={datefrom}
+                onChange={(e) => {
+                  setDatefrom(e.target.value);
+                  setDatefromspan(" ");
+                }}
+                type="date"
+                class="form-control"
+                id="datefrom"
+              />
+              <span style={{ color: "red" }}>{datefromspan}</span>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
+            <div class="col-md-4 col-sm-10">
+              <label for="dateto">
                 Date To
                 <span style={{ color: "red", marginLeft: "5px" }}>*</span>
               </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={dateto}
-                  onChange={(e) => {
-                    setDateto(e.target.value);
-                    setDatetospan(" ");
-                  }}
-                  type="Date"
-                  class="form-control"
-                  id="dateto"
-                />
-                <span style={{ color: "red" }}>{datetospan}</span>
-              </div>
+
+              <input
+                value={dateto}
+                onChange={(e) => {
+                  setDateto(e.target.value);
+                  setDatetospan(" ");
+                }}
+                type="Date"
+                class="form-control"
+                id="dateto"
+              />
+              <span style={{ color: "red" }}>{datetospan} </span>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Flight
-              </label>
-              <div class="col-md-10 col-sm-10">
+          </div>
+
+          <div class="form-group row p-5">
+            <header className="col-md-12">
+              <span style={{ fontSize: "2rem" }}>Cost Estimation</span>
+            </header>
+            <div className="row cost-section p-2 mt-2">
+              <div class="form-group mb-3 col-md-6 col-sm-12">
+                <label for="flightcost">Flight</label>
+
                 <input
                   value={flight}
                   onChange={(e) => setFlight(e.target.value)}
-                  type="text"
+                  onKeyUp={() => findsum()}
+                  type="number"
                   class="form-control"
                   id="flight"
                   placeholder="Flight Cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Hotac
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group col-md-6 col-sm-12">
+                <label for="Hotaccost">Hotac</label>
+
                 <input
                   value={hotac}
                   onChange={(e) => setHotac(e.target.value)}
-                  type="text"
+                  onKeyUp={() => findsum()}
+                  type="number"
                   class="form-control"
                   id="hotac"
                   placeholder="Hotac cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Perdium
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group mb-3 col-md-6 col-sm-12">
+                <label for="perdiumcost">Perdium</label>
+
                 <input
                   value={perdiem}
                   onChange={(e) => setPerdium(e.target.value)}
-                  type="text"
+                  onKeyUp={() => findsum()}
+                  type="number"
                   class="form-control"
                   id="perdium"
                   placeholder="Perdium cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Other cost
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group  col-md-6 col-sm-10">
+                <label for="othercost">Other cost</label>
+
                 <input
                   value={othercost}
                   onChange={(e) => setOthercost(e.target.value)}
-                  type="text"
+                  onKeyUp={() => findsum()}
+                  type="number"
                   class="form-control"
                   id="othercost"
                   placeholder="Other cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center align-items-center"
-              >
-                Total Cost
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group  mb-3 col-md-3 col-sm-10">
+                <label for="totalcost">Total Cost</label>
+
                 <input
                   type="text"
                   class="form-control"
                   id="totalcost"
                   value={totalcost}
+                  disabled
                 />
               </div>
             </div>
-            <div class="form-group row mb-3">
-              <div class="offset-md-2 col-md-2 col-sm-12">
-                <input
-                  type="button"
-                  value="Find Total cost"
-                  class="btn btn-primary"
-                  onClick={() => findsum()}
-                />
-              </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-4 col-sm-10">
+              <label for="comments">Comments if Any:</label>
+
+              <textarea
+                rows="5"
+                class="form-control mt-2"
+                id="commentsifany"
+                value={commentsifany}
+                onChange={(e) => setcommentsifany(e.target.value)}
+              />
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="comments"
-                class="col-md-2 col-sm-2 col-form-label text-center"
+          </div>
+
+          <div class="form-group row mt-3">
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  validation();
+                }}
               >
-                Comments if Any:
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="commentsifany"
-                  value={commentsifany}
-                  onChange={(e) => setcommentsifany(e.target.value)}
-                />
-              </div>
+                Submit
+              </Button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => reset()}
+              >
+                Clear All
+              </button>
             </div>
-            <div class="form-group row mb-3">
-              <div class="offset-md-2 col-md-2 mt-3">
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    validation();
-                  }}
-                >
-                  Submit
-                </Button>
-              </div>
-              <div class="offset-md-6 col-md-2 mt-3">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => reset()}
-                >
-                  Clear All
-                </button>
-              </div>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </>

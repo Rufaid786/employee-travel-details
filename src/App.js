@@ -7,7 +7,7 @@ import POM from "./components/POM";
 
 function App() {
   return (
-    <div className="container">
+    <div>
       <Router>
         <Navbar />
         <Routes>
