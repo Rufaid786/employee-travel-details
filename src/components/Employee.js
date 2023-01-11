@@ -93,7 +93,7 @@ function Employee() {
     <div className="p-4" style={{ background: "#f0f2f5" }}>
       <div class="row mb-3">
         <div class="section-1">
-          <div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <input
               type="text"
               className="text-box"
@@ -104,7 +104,7 @@ function Employee() {
               }}
               placeholder="Employee Id to update"
             />
-            <span>{empidspan}</span>
+            <span style={{ color: "red" }}>{empidspan}</span>
           </div>
           <button
             type="button"
@@ -122,29 +122,6 @@ function Employee() {
           filteredeemployeevalues={filteredeemployeevalues}
         />
       ) : null}
-      {/* <div class="row">
-        <div class="col-md-6 col-sm-12 p-3 section-1">
-          <input
-            type="text"
-            className="col-md-6 text-box"
-            onChange={(e) => setUpdatevalue(e.target.value)}
-            onKeyUp={() => filterfunction(updatevalue)}
-            placeholder="Employee Id to update"
-          />
-        </div>
-        <div className="col-md-6 col-sm-12 p-3 section-2">
-          <button
-            type="button"
-            class="col-md-3 btn btn-outline-primary"
-            onClick={() => redirect()}
-          >
-            <FontAwesomeIcon icon={faPlus} style={{ marginRight: "7px" }} />
-            <span>Add Employee</span>
-          </button>
-
-          <span style={{ color: "red" }}>{validationspan}</span>
-        </div>
-      </div> */}
     </div>
   );
 }

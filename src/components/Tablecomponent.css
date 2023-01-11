@@ -1,0 +1,6 @@
+.main-card {
+  max-width: "800px";
+  max-height: "540px";
+  overflow-x: "auto";
+  overflow-y: "auto";
+}
