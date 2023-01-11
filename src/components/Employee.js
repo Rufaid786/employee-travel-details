@@ -34,11 +34,13 @@ function Employee() {
       setValidationspan("");
     }
   };
+
   useEffect(() => {
     Employeeservices.getEmployees()
       .then((success) => {
         setEmployees(success.data);
         setConstantemployees(success.data);
+        setUpdatevalue("");
       })
       .catch((error) => console.log(error));
   }, []);
