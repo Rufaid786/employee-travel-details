@@ -15,6 +15,8 @@ function Employee() {
   const [employees, setEmployees] = useState([]);
   const [constantemployees, setConstantemployees] = useState([]);
   const [updatevalue, setUpdatevalue] = useRecoilState(bookingid);
+
+  const [employeeid, setEmployeeid] = useState("");
   const [validationspan, setValidationspan] = useState("");
   const [filteredeemployeevalues, setFilteredemployeevalues] =
     useState(employees);
@@ -97,7 +99,7 @@ function Employee() {
             <input
               type="text"
               className="text-box"
-              onChange={(e) => setUpdatevalue(e.target.value)}
+              onChange={(e) => setEmployeeid(e.target.value)}
               onKeyUp={(e) => {
                 employeeidvalidation(e.target.value);
                 // filterfunction(updatevalue)

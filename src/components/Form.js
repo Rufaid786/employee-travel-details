@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import "./Form.css";
-import axios from "axios";
+
 function Form() {
   const [show, setShow] = useState(false);
 
@@ -30,12 +30,19 @@ function Form() {
   const [othercost, setOthercost] = useState("");
   const [totalcost, setTotalcost] = useState("");
   const [commentsifany, setcommentsifany] = useState("");
+
   const [countryfrom, setCountryfrom] = useState("");
   const [statefrom, setStatefrom] = useState("");
   const [cityfrom, setCityfrom] = useState("");
   const [countryto, setCountryto] = useState("");
   const [stateto, setStateto] = useState("");
   const [cityto, setCityto] = useState("");
+  const [countryfromspan, setCountryfromspan] = useState("");
+  const [statefromspan, setStatefromspan] = useState("");
+  const [cityfromspan, setCityfromspan] = useState("");
+  const [countrytospan, setCountrytospan] = useState("");
+  const [statetospan, setStatetospan] = useState("");
+  const [citytospan, setCitytospan] = useState("");
 
   const [empidspan, setempidspan] = useState("");
   const [emp, setEmp] = useState([]);
@@ -52,14 +59,11 @@ function Form() {
     navigate("/employeesection");
   };
   const [data, setData] = useState([]);
-  const [selectedcountry, setSelectedcountry] = useState();
-  const [selectedstate, setSelectedstate] = useState("");
-  const [selectedcity, setSelectedcity] = useState();
-  const [countryfromspan, setCountryfromspan] = useState("");
-  const [statefromspan, setStatefromspan] = useState("");
-  const [cityfromspan, setCityfromspan] = useState("");
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
+
+  const [statesdatafrom, setStatesdatafrom] = useState([]);
+  const [citiesdatafrom, setCitiesdatafrom] = useState([]);
+  const [statesdatato, setStatesdatato] = useState([]);
+  const [citiesdatato, setCitiesdatato] = useState([]);
   const getcoutrycitystate = () => {
     Employeeservices.getCountrycitystate()
       .then((success) => {
@@ -73,21 +77,43 @@ function Form() {
   const countries = [...new Set(data.map((item) => item.country))];
   countries.sort();
 
-  const handlecountry = (event) => {
-    setCountryfromspan("");
-    setSelectedcountry(event);
-    let uniquestates = data.filter((state) => state.country === event);
-    uniquestates = [...new Set(uniquestates.map((state) => state.subcountry))];
-    uniquestates.sort();
-    setStates(uniquestates);
+  const handlecountryfrom = (event) => {
+    let uniquestatesfrom = data.filter((state) => state.country === event);
+    uniquestatesfrom = [
+      ...new Set(uniquestatesfrom.map((state) => state.subcountry)),
+    ];
+    uniquestatesfrom.sort();
+    setStatesdatafrom(uniquestatesfrom);
   };
-  const handlestates = (event) => {
-    setStatefromspan("");
-    setSelectedstate(event);
-    let uniquecities = data.filter((city) => city.subcountry === event);
-    uniquecities = [...new Set(uniquecities.map((city) => city.name))];
-    uniquecities.sort();
-    setCities(uniquecities);
+  const handlestatesfrom = (event) => {
+    let uniquecitiesfrom = data.filter((city) => city.subcountry === event);
+    uniquecitiesfrom = [...new Set(uniquecitiesfrom.map((city) => city.name))];
+    uniquecitiesfrom.sort();
+    setCitiesdatafrom(uniquecitiesfrom);
+  };
+
+  const handlecountryto = (event) => {
+    let uniquestatesto = data.filter((state) => state.country === event);
+    uniquestatesto = [
+      ...new Set(uniquestatesto.map((state) => state.subcountry)),
+    ];
+    uniquestatesto.sort();
+    setStatesdatato(uniquestatesto);
+  };
+  const handlestatesto = (event) => {
+    let uniquecitiesto = data.filter((city) => city.subcountry === event);
+    uniquecitiesto = [...new Set(uniquecitiesto.map((city) => city.name))];
+    uniquecitiesto.sort();
+    setCitiesdatato(uniquecitiesto);
+  };
+  const handletravelfrom = (city) => {
+    setTravelfrom(countryfrom.concat(",", statefrom).concat(",", city));
+  };
+  const handletravelto = (city) => {
+    setTravelto(countryto.concat(",", stateto).concat(",", city));
+  };
+  const check = () => {
+    console.log(travelto);
   };
   useEffect(() => {
     getcoutrycitystate();
@@ -101,8 +127,12 @@ function Form() {
           setEmpid(success.data["Emp ID"]);
           setEmpname(success.data["Emp Name"]);
           setPurposeoftravel(success.data["Purpose of Travel"]);
-          setTravelfrom(success.data["Travel from"]);
-          setTravelto(success.data["Travel to"]);
+          setCountryfrom(success.data["Travel from"].split(",")[0]);
+          setStatefrom(success.data["Travel from"].split(",")[1]);
+          setCityfrom(success.data["Travel from"].split(",")[2]);
+          setCountryto(success.data["Travel to"].split(",")[0]);
+          setStateto(success.data["Travel to"].split(",")[1]);
+          setCityto(success.data["Travel to"].split(",")[2]);
           setDatefrom(success.data["Date from"]);
           setDateto(success.data["Date To"]);
           setFlight(success.data.Flight);
@@ -125,6 +155,8 @@ function Form() {
     setTotalcost(req);
   };
   const saveEmployee = (e) => {
+    console.log(e);
+
     e.preventDefault();
     const employee = {
       id,
@@ -242,11 +274,23 @@ function Form() {
     if (dateto) {
       setDatetospan("");
     }
-    if (travelfrom) {
+    if (countryfrom) {
       setCountryfromspan("");
     }
-    if (travelto) {
-      setTraveltospan("");
+    if (statefrom) {
+      setStatefromspan("");
+    }
+    if (cityfrom) {
+      setCityfromspan("");
+    }
+    if (countryto) {
+      setCountrytospan("");
+    }
+    if (stateto) {
+      setStatetospan("");
+    }
+    if (cityto) {
+      setCitytospan("");
     }
   };
   const validation = () => {
@@ -254,12 +298,23 @@ function Form() {
     purposeoftravel === ""
       ? setPurposeoftravelspan("This field is Required")
       : setPurposeoftravelspan("");
-    travelfrom === ""
+    countryfrom === ""
       ? setCountryfromspan("This field is Required")
       : setCountryfromspan("");
-    travelto === ""
-      ? setTraveltospan("This field is Required")
-      : setTraveltospan("");
+    statefrom === ""
+      ? setStatefromspan("This field is Required")
+      : setStatefromspan("");
+    cityfrom === ""
+      ? setCityfromspan("This field is Required")
+      : setCityfromspan("");
+    countryto === ""
+      ? setCountrytospan("This field is Required")
+      : setCountrytospan("");
+    stateto === ""
+      ? setStatetospan("This field is Required")
+      : setCitytospan("");
+    cityto === "" ? setCitytospan("This field is Required") : setCitytospan("");
+
     datefrom === ""
       ? setDatefromspan("This field is Required")
       : setDatetospan("");
@@ -267,8 +322,12 @@ function Form() {
     if (
       empid !== "" &&
       purposeoftravel !== "" &&
-      travelfrom !== "" &&
-      travelto !== "" &&
+      countryfrom !== "" &&
+      statefrom !== "" &&
+      cityfrom !== "" &&
+      countryto !== "" &&
+      stateto !== "" &&
+      cityto !== "" &&
       datefrom !== "" &&
       dateto !== ""
     ) {
@@ -426,15 +485,21 @@ function Form() {
                 </div>
               </div>
               <div className="row p-2">
-                <span style={{ fontSize: "1.5rem" }}>Travel From</span>
+                <span>
+                  Travel From
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </span>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
+                    values={countryfrom}
                     class="form-select"
                     onChange={(e) => {
-                      handlecountry(e.target.value);
+                      handlecountryfrom(e.target.value);
+                      setCountryfrom(e.target.value);
+                      setCountryfromspan("");
                     }}
                   >
-                    <option>--Select a country--</option>
+                    <option>{countryfrom}</option>
                     {countries.map((country) => (
                       <option key={country} value={country}>
                         {country}
@@ -448,11 +513,13 @@ function Form() {
                     class="form-select"
                     aria-label="Default select example"
                     onChange={(e) => {
-                      handlestates(e.target.value);
+                      handlestatesfrom(e.target.value);
+                      setStatefrom(e.target.value);
+                      setStatefromspan("");
                     }}
                   >
-                    <option selected>--Select a State--</option>
-                    {states.map((items) => (
+                    <option selected>{statefrom}</option>
+                    {statesdatafrom.map((items) => (
                       <option key={items} value={items}>
                         {items}
                       </option>
@@ -464,9 +531,13 @@ function Form() {
                   <select
                     class="form-select"
                     aria-label="Default select example"
+                    onChange={(e) => {
+                      handletravelfrom(e.target.value);
+                      setCityfromspan("");
+                    }}
                   >
-                    <option selected>--Select a city--</option>
-                    {cities.map((items) => (
+                    <option selected>{cityfrom}</option>
+                    {citiesdatafrom.map((items) => (
                       <option key={items} value={items}>
                         {items}
                       </option>
@@ -476,53 +547,65 @@ function Form() {
                 </div>
               </div>
               <div className="row p-2">
-                <span style={{ fontSize: "1.5rem" }}>Travel To</span>
+                <span>
+                  Travel To
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </span>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
                     class="form-select"
                     onChange={(e) => {
-                      handlecountry(e.target.value);
+                      handlecountryto(e.target.value);
+                      setCountryto(e.target.value);
+                      setCountrytospan("");
                     }}
                   >
-                    <option>--Select a country--</option>
+                    <option>{countryto}</option>
                     {countries.map((country) => (
                       <option key={country} value={country}>
                         {country}
                       </option>
                     ))}
                   </select>
-                  <span style={{ color: "red" }}>{countryfromspan}</span>
+                  <span style={{ color: "red" }}>{countrytospan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
                     class="form-select"
                     aria-label="Default select example"
                     onChange={(e) => {
-                      handlestates(e.target.value);
+                      handlestatesto(e.target.value);
+                      setStateto(e.target.value);
+                      setStatetospan("");
                     }}
                   >
-                    <option selected>--Select a State--</option>
-                    {states.map((items) => (
+                    <option>{stateto}</option>
+                    {statesdatato.map((items) => (
                       <option key={items} value={items}>
                         {items}
                       </option>
                     ))}
                   </select>
-                  <span style={{ color: "red" }}>{statefromspan}</span>
+                  <span style={{ color: "red" }}>{statetospan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
                     class="form-select"
                     aria-label="Default select example"
+                    onChange={(e) => {
+                      handletravelto(e.target.value);
+                      setCitytospan("");
+                    }}
                   >
-                    <option selected>--Select a city--</option>
-                    {cities.map((items) => (
+                    <option>{cityto}</option>
+                    {citiesdatato.map((items) => (
                       <option key={items} value={items}>
                         {items}
                       </option>
                     ))}
                   </select>
-                  <span style={{ color: "red" }}>{cityfromspan}</span>
+                  <span style={{ color: "red" }}>{citytospan}</span>
+                  <button onClick={() => check()}>check</button>
                 </div>
               </div>
             </div>
