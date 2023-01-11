@@ -78,6 +78,8 @@ function Form() {
   countries.sort();
 
   const handlecountryfrom = (event) => {
+    setCountryfrom(event);
+    setCountryfromspan("");
     let uniquestatesfrom = data.filter((state) => state.country === event);
     uniquestatesfrom = [
       ...new Set(uniquestatesfrom.map((state) => state.subcountry)),
@@ -86,6 +88,8 @@ function Form() {
     setStatesdatafrom(uniquestatesfrom);
   };
   const handlestatesfrom = (event) => {
+    setStatefrom(event);
+    setStatefromspan("");
     let uniquecitiesfrom = data.filter((city) => city.subcountry === event);
     uniquecitiesfrom = [...new Set(uniquecitiesfrom.map((city) => city.name))];
     uniquecitiesfrom.sort();
@@ -93,6 +97,8 @@ function Form() {
   };
 
   const handlecountryto = (event) => {
+    setCountryto(event);
+    setCountrytospan("");
     let uniquestatesto = data.filter((state) => state.country === event);
     uniquestatesto = [
       ...new Set(uniquestatesto.map((state) => state.subcountry)),
@@ -101,18 +107,25 @@ function Form() {
     setStatesdatato(uniquestatesto);
   };
   const handlestatesto = (event) => {
+    setStateto(event);
+    setStatetospan("");
     let uniquecitiesto = data.filter((city) => city.subcountry === event);
     uniquecitiesto = [...new Set(uniquecitiesto.map((city) => city.name))];
     uniquecitiesto.sort();
     setCitiesdatato(uniquecitiesto);
   };
   const handletravelfrom = (city) => {
-    setTravelfrom(countryfrom.concat(",", statefrom).concat(",", city));
+    setCityfrom(city);
+    console.log(city);
+    setCityfromspan("");
   };
   const handletravelto = (city) => {
-    setTravelto(countryto.concat(",", stateto).concat(",", city));
+    console.log(city);
+    setCityto(city);
+    setCitytospan("");
   };
   const check = () => {
+    console.log(travelfrom);
     console.log(travelto);
   };
   useEffect(() => {
@@ -187,8 +200,13 @@ function Form() {
     setEmpid("");
     setEmpname("");
     setPurposeoftravel("");
-    setTravelfrom("");
-    setTravelto("");
+    setCountryfrom("");
+    setStatefrom("");
+    setCityfrom("");
+    setCountryto("");
+    setStateto("");
+    setCityto("");
+
     setDatefrom("");
     setDateto("");
     setFlight("");
@@ -206,8 +224,12 @@ function Form() {
     setEmpid("");
     setEmpname("");
     setPurposeoftravel("");
-    setTravelfrom("");
-    setTravelto("");
+    setCountryfrom("");
+    setStatefrom("");
+    setCityfrom("");
+    setCountryto("");
+    setStateto("");
+    setCityto("");
     setDatefrom("");
     setDateto("");
     setFlight("");
@@ -331,6 +353,8 @@ function Form() {
       datefrom !== "" &&
       dateto !== ""
     ) {
+      setTravelfrom(countryfrom.concat(",", statefrom).concat(",", cityfrom));
+      setTravelto(countryto.concat(",", stateto).concat(",", cityto));
       handleShow();
     }
   };
@@ -495,8 +519,6 @@ function Form() {
                     class="form-select"
                     onChange={(e) => {
                       handlecountryfrom(e.target.value);
-                      setCountryfrom(e.target.value);
-                      setCountryfromspan("");
                     }}
                   >
                     <option>{countryfrom}</option>
@@ -510,12 +532,11 @@ function Form() {
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
+                    value={statefrom}
                     class="form-select"
                     aria-label="Default select example"
                     onChange={(e) => {
                       handlestatesfrom(e.target.value);
-                      setStatefrom(e.target.value);
-                      setStatefromspan("");
                     }}
                   >
                     <option selected>{statefrom}</option>
@@ -530,10 +551,10 @@ function Form() {
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
                     class="form-select"
+                    value={cityfrom}
                     aria-label="Default select example"
                     onChange={(e) => {
                       handletravelfrom(e.target.value);
-                      setCityfromspan("");
                     }}
                   >
                     <option selected>{cityfrom}</option>
@@ -554,10 +575,9 @@ function Form() {
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
                     class="form-select"
+                    value={countryto}
                     onChange={(e) => {
                       handlecountryto(e.target.value);
-                      setCountryto(e.target.value);
-                      setCountrytospan("");
                     }}
                   >
                     <option>{countryto}</option>
@@ -571,12 +591,11 @@ function Form() {
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
+                    value={stateto}
                     class="form-select"
                     aria-label="Default select example"
                     onChange={(e) => {
                       handlestatesto(e.target.value);
-                      setStateto(e.target.value);
-                      setStatetospan("");
                     }}
                   >
                     <option>{stateto}</option>
@@ -590,11 +609,11 @@ function Form() {
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
                   <select
+                    value={cityto}
                     class="form-select"
                     aria-label="Default select example"
                     onChange={(e) => {
                       handletravelto(e.target.value);
-                      setCitytospan("");
                     }}
                   >
                     <option>{cityto}</option>
@@ -707,6 +726,7 @@ function Form() {
                 variant="primary"
                 onClick={() => {
                   validation();
+                  // check();
                 }}
               >
                 Submit
