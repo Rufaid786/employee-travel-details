@@ -35,12 +35,14 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
     data: filteredemployees,
   };
 
-  const filterfunction = (end) => {
+  const filterfunction = (e) => {
+    e.preventDefault();
     setFilteredemployees("");
     console.log(startdate);
-    console.log(end);
-    Employeeservices.getfiltereddata(startdate, end)
+    console.log(enddate);
+    Employeeservices.getfiltereddata(startdate, enddate)
       .then((success) => {
+        //console.log(success.data);
         setFilteredemployees(success.data);
       })
       .catch((error) => console.log(error));
@@ -79,10 +81,11 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
               style={{ marginLeft: "5px" }}
               onChange={(e) => {
                 setEnddate(e.target.value);
-                filterfunction(e.target.value);
+                //filterfunction(e.target.value);
               }}
             />
           </label>
+          <button onClick={(e) => filterfunction(e)}>check</button>
           <br></br>
 
           <CSVLink {...filteredreport} className="btn btn-success">
