@@ -29,11 +29,6 @@ function Employee() {
   const redirect = () => {
     navigate("/employeeform");
   };
-  const keyupcheck = () => {
-    if (updatevalue != null) {
-      setValidationspan("");
-    }
-  };
 
   useEffect(() => {
     Employeeservices.getEmployees()
@@ -47,7 +42,7 @@ function Employee() {
   const filterfunction = (empid) => {
     console.log(empid);
     const filterfind = constantemployees.filter((employee) => {
-      if (employee["Emp ID"] == empid && employee["Status"] == "unapproved") {
+      if (employee["Emp ID"] == empid) {
         return true;
       } else {
         return false;
@@ -55,21 +50,7 @@ function Employee() {
     });
     setFilteredemployeevalues(filterfind);
   };
-  // const employeeidcheck = () => {
-  //   if (updatevalue === "") {
-  //     setValidationspan("Please provide a Booking id");
-  //   } else {
-  //     Employeeservices.getEmployeebyid(updatevalue)
-  //       .then((success) => {
-  //         redirect();
-  //       })
-  //       .catch((error) =>
-  //         setValidationspan(
-  //           "Booking Id doesnot exists..!!. Please Provide a valid Booking Id!!!!"
-  //         )
-  //       );
-  //   }
-  // };
+
   const employeeidvalidation = (id) => {
     if (id.length > 0) {
       Employeeservices.geteid(id)
