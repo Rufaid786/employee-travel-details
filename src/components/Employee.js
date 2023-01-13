@@ -47,7 +47,7 @@ function Employee() {
   const filterfunction = (empid) => {
     console.log(empid);
     const filterfind = constantemployees.filter((employee) => {
-      if (employee["Emp ID"] == empid) {
+      if (employee["Emp ID"] == empid && employee["Status"] == "unapproved") {
         return true;
       } else {
         return false;

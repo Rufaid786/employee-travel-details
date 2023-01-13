@@ -52,24 +52,12 @@ function Form() {
   const [datefromspan, setDatefromspan] = useState("");
   const [datetospan, setDatetospan] = useState("");
   const [empidnav, setEmpidnav] = useState("");
-  var currentdate = new Date();
-  var datetime =
-    currentdate.getDate() +
-    "-" +
-    (currentdate.getMonth() + 1) +
-    "-" +
-    currentdate.getFullYear() +
-    "\t" +
-    currentdate.getHours() +
-    ":" +
-    currentdate.getMinutes() +
-    ":" +
-    currentdate.getSeconds();
   const navigate = useNavigate();
 
   const redirect = () => {
     navigate("/employeesection");
   };
+  const [approved, setApproved] = useState("unapproved");
   const [data, setData] = useState([]);
 
   const [statesdatafrom, setStatesdatafrom] = useState([]);
@@ -200,7 +188,7 @@ function Form() {
       othercost,
       totalcost,
       commentsifany,
-      datetime,
+      approved,
     };
     Employeeservices.addemployee(employee)
       .then((success) => {
@@ -637,7 +625,6 @@ function Form() {
                     ))}
                   </select>
                   <span style={{ color: "red" }}>{citytospan}</span>
-                  <button onClick={() => check()}>check</button>
                 </div>
               </div>
             </div>
