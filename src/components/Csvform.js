@@ -7,6 +7,7 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
   const [enddate, setEnddate] = useState("");
   const [employees, setEmployees] = useState([]);
   const [filteredemployees, setFilteredemployees] = useState([]);
+  const [exportshow, setExportsow] = useState(false);
   const header = [
     { label: "Account", key: "Account" },
     { label: "Project/Contract", key: "Project/Contract" },
@@ -44,6 +45,7 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
       .then((success) => {
         //console.log(success.data);
         setFilteredemployees(success.data);
+        setExportsow(true);
       })
       .catch((error) => console.log(error));
   };
@@ -57,8 +59,8 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
   }, []);
   return (
     <div className="mt-3">
-      <div style={{ display: "flex" }} className="mt-3">
-        <div className="col-md-6">
+      <div className="row">
+        <div className="col-md-6 col-sm-12">
           <h5>
             Choose Your Date and click on export to download in csv format
           </h5>
@@ -85,14 +87,21 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
               }}
             />
           </label>
-          <button onClick={(e) => filterfunction(e)}>check</button>
-          <br></br>
 
-          <CSVLink {...filteredreport} className="btn btn-success">
-            Export
-          </CSVLink>
+          <button
+            class="btn btn-primary mt-3"
+            onClick={(e) => filterfunction(e)}
+          >
+            Set Date
+          </button>
+          <br></br>
+          {exportshow ? (
+            <CSVLink {...filteredreport} className="btn btn-success mt-3">
+              Export
+            </CSVLink>
+          ) : null}
         </div>
-        <div className="col-md-6">
+        <div className="col-md-6 col-sm-12">
           <h5>Click on Export All to download All records in csv format</h5>
           <CSVLink {...csvReport} className="btn btn-success">
             Export All

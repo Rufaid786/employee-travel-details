@@ -2,97 +2,9 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLink, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "./Tablecomponent.css";
-import { Card, Table } from "react-bootstrap";
+
 function Tablecomponent({ filteredeemployeevalues, settingtheupdatevalue }) {
   return (
-    // <Card body className="main-card shadow-sm">
-    //   <Table striped bordered hover responsive className="mb-0">
-    //     <thead className="table-dark">
-    //       <tr>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Booking ID
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Account
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Project/Contract
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Emp ID
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Emp Name
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Purpose of Travel
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Travel From
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Travel To
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Date From
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Date To
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Flight
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Hotac
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Perdium
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Other Cost
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Total Cost
-    //         </th>
-    //         <th scope="col" style={{ width: "200px" }}>
-    //           Comments if Any
-    //         </th>
-    //       </tr>
-    //     </thead>
-    //     <tbody>
-    //       {filteredeemployeevalues.map((employee) => (
-    //         <tr>
-    //           <td>{employee.id}</td>
-    //           <td>{employee.Account}</td>
-    //           <td>{employee["Project/Contract"]}</td>
-    //           <td>{employee["Emp ID"]}</td>
-    //           <td>{employee["Emp Name"]}</td>
-    //           <td>{employee["Purpose of Travel"]}</td>
-    //           <td>{employee["Travel from"]}</td>
-    //           <td>{employee["Travel to"]}</td>
-    //           <td>{employee["Date from"]}</td>
-    //           <td>{employee["Date To"]}</td>
-    //           <td>{employee["Flight"]}</td>
-    //           <td>{employee["Hotac"]}</td>
-    //           <td>{employee["Perdiem"]}</td>
-    //           <td>{employee["Other cost"]}</td>
-    //           <td>{employee["Total Cost"]}</td>
-    //           <td>{employee["Comments if Any"]}</td>
-    //           <td>
-    //             <FontAwesomeIcon
-    //               icon={faExternalLink}
-    //               onClick={() => {
-    //                 settingtheupdatevalue(employee.id);
-    //               }}
-    //             />
-    //             <FontAwesomeIcon icon={faTrash} />
-    //           </td>
-    //         </tr>
-    //       ))}
-    //     </tbody>
-    //   </Table>
-    // </Card>
-
     <div class="row p-3">
       <h4>Employee Travel Details</h4>
       <table
@@ -119,6 +31,7 @@ function Tablecomponent({ filteredeemployeevalues, settingtheupdatevalue }) {
             <th scope="col">Comments if Any</th>
           </tr>
         </thead>
+
         <tbody>
           {filteredeemployeevalues.map((employee) => (
             <tr>
@@ -151,6 +64,9 @@ function Tablecomponent({ filteredeemployeevalues, settingtheupdatevalue }) {
           ))}
         </tbody>
       </table>
+      {/* <button onClick={() => console.log(filteredeemployeevalues)}>
+        clickme
+      </button> */}
     </div>
   );
 }
