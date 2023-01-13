@@ -124,10 +124,7 @@ function Form() {
     setCityto(city);
     setCitytospan("");
   };
-  const check = () => {
-    console.log(travelfrom);
-    console.log(travelto);
-  };
+
   useEffect(() => {
     getcoutrycitystate();
     if (bid) {
