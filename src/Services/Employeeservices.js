@@ -14,6 +14,10 @@ class Employeeservices {
     return axios.get(baseurl + "empget?id=" + bookid);
   }
 
+  deleteEmployeebyid(bookingid) {
+    return axios.delete(baseurl + "?id=" + bookingid);
+  }
+
   getfiltereddata(startingdate, endingdate) {
     return axios.get(
       baseurl +
