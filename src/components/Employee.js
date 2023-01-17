@@ -34,15 +34,15 @@ function Employee() {
       .then((success) => {
         setEmployees(success.data);
         setConstantemployees(success.data);
-        setUpdatevalue("");
       })
       .catch((error) => console.log(error));
   };
   useEffect(() => {
+    setUpdatevalue("");
     getallEmployees();
   }, []);
   const filterfunction = (empid) => {
-    getallEmployees();
+    // getallEmployees();
     console.log(empid);
     const filterfind = constantemployees.filter((employee) => {
       if (employee["Emp ID"] === empid) {
@@ -77,13 +77,9 @@ function Employee() {
       setempidspan("");
     }
   };
-  const deleteEmployee = (bookid, empid) => {
+  const deleteEmployee = (bookid) => {
     Employeeservices.deleteEmployeebyid(bookid)
       .then((success) => {
-        // console.log(bookid);
-        // console.log("empid=", empid);
-        // getallEmployees();
-        filterfunction(empid);
         console.log(success.data);
       })
       .catch((error) => console.log(error));
@@ -96,8 +92,7 @@ function Employee() {
             <input
               type="text"
               className="text-box"
-              onChange={(e) => setEmployeeid(e.target.value)}
-              onKeyUp={(e) => {
+              onChange={(e) => {
                 employeeidvalidation(e.target.value);
               }}
               placeholder="Employee Id to update"

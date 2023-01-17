@@ -378,7 +378,7 @@ function Form() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="p-3" style={{ background: "#f0f2f5" }}>
+      <div style={{ background: "#f0f2f5" }}>
         {title()}
 
         <br></br>
@@ -433,7 +433,7 @@ function Form() {
                   disabled
                 />
               </div>
-              <div class="form-group  col-md-6 col-sm-10">
+              <div class="form-group  col-md-6 col-sm-12 mb-3">
                 <label for="empname">Emp Name</label>
                 <input
                   value={empname}
@@ -641,7 +641,7 @@ function Form() {
                   value={flight}
                   onChange={(e) => setFlight(e.target.value)}
                   onKeyUp={() => findsum()}
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="flight"
                   placeholder="Flight Cost"
@@ -654,7 +654,7 @@ function Form() {
                   value={hotac}
                   onChange={(e) => setHotac(e.target.value)}
                   onKeyUp={() => findsum()}
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="hotac"
                   placeholder="Hotac cost"
@@ -667,30 +667,30 @@ function Form() {
                   value={perdiem}
                   onChange={(e) => setPerdium(e.target.value)}
                   onKeyUp={() => findsum()}
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="perdium"
                   placeholder="Perdium cost"
                 />
               </div>
-              <div class="form-group  col-md-6 col-sm-10">
+              <div class="form-group  col-md-6 col-sm-12">
                 <label for="othercost">Other cost</label>
 
                 <input
                   value={othercost}
                   onChange={(e) => setOthercost(e.target.value)}
                   onKeyUp={() => findsum()}
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="othercost"
                   placeholder="Other cost"
                 />
               </div>
-              <div class="form-group  mb-3 col-md-3 col-sm-10">
+              <div class="form-group  mb-3 col-md-3 col-sm-12">
                 <label for="totalcost">Total Cost</label>
 
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="totalcost"
                   value={totalcost}
@@ -718,7 +718,10 @@ function Form() {
           </div>
 
           <div class="form-group row mt-3">
-            <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <div
+              className="mb-5"
+              style={{ display: "flex", justifyContent: "space-around" }}
+            >
               <Button
                 variant="primary"
                 onClick={() => {

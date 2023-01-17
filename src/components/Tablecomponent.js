@@ -37,7 +37,10 @@ function Tablecomponent({
             variant="danger"
             onClick={() => {
               handleClose();
-              deleteEmployee(bookingidtodelete, empidfilterafterdelete);
+              deleteEmployee(bookingidtodelete);
+              getallEmployees();
+
+              filterfunction(empidfilterafterdelete);
             }}
           >
             Yes
@@ -46,68 +49,74 @@ function Tablecomponent({
       </Modal>
       <div class="row p-3">
         <h4>Employee Travel Details</h4>
-        <table
-          class="table table-bordered table-striped hover responsive"
-          style={{ background: "white" }}
-        >
-          <thead>
-            <tr>
-              <th scope="col">Account</th>
-              <th scope="col">Project/Contract</th>
-              <th scope="col">Emp ID</th>
-              <th scope="col">Emp Name</th>
-              <th scope="col">Purpose of Travel</th>
-              <th scope="col">Travel From</th>
-              <th scope="col">Travel To</th>
-              <th scope="col">Date From</th>
-              <th scope="col">Date To</th>
-              <th scope="col">Flight</th>
-              <th scope="col">Hotac</th>
-              <th scope="col">Perdium</th>
-              <th scope="col">Other Cost</th>
-              <th scope="col">Total Cost</th>
-              <th scope="col">Comments if Any</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredeemployeevalues.map((employee) => (
+        <div className="table-responsive">
+          <table
+            class="table table-bordered table-striped"
+            style={{ background: "white" }}
+          >
+            <thead>
               <tr>
-                <td>{employee.Account}</td>
-                <td>{employee["Project/Contract"]}</td>
-                <td>{employee["Emp ID"]}</td>
-                <td>{employee["Emp Name"]}</td>
-                <td>{employee["Purpose of Travel"]}</td>
-                <td>{employee["Travel from"]}</td>
-                <td>{employee["Travel to"]}</td>
-                <td>{employee["Date from"]}</td>
-                <td>{employee["Date To"]}</td>
-                <td>{employee["Flight"]}</td>
-                <td>{employee["Hotac"]}</td>
-                <td>{employee["Perdiem"]}</td>
-                <td>{employee["Other cost"]}</td>
-                <td>{employee["Total Cost"]}</td>
-                <td>{employee["Comments if Any"]}</td>
-                <td>
-                  <FontAwesomeIcon
-                    icon={faExternalLink}
-                    onClick={() => {
-                      settingtheupdatevalue(employee.id);
-                    }}
-                  />
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    onClick={() => {
-                      handleShow();
-                      setBookingidtodelete(employee.id);
-                      setEmpidfilterafterdelete(employee["Emp ID"]);
-                    }}
-                  />
-                </td>
+                <th scope="col">Account</th>
+                <th scope="col">Project/Contract</th>
+                <th scope="col">Emp ID</th>
+                <th scope="col">Emp Name</th>
+                <th scope="col">Purpose of Travel</th>
+                <th scope="col">Travel From</th>
+                <th scope="col">Travel To</th>
+                <th scope="col">Date From</th>
+                <th scope="col">Date To</th>
+                <th scope="col">Flight</th>
+                <th scope="col">Hotac</th>
+                <th scope="col">Perdium</th>
+                <th scope="col">Other Cost</th>
+                <th scope="col">Total Cost</th>
+                <th scope="col">Comments if Any</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {filteredeemployeevalues.map((employee) => (
+                <tr>
+                  <td>{employee.Account}</td>
+                  <td>{employee["Project/Contract"]}</td>
+                  <td>{employee["Emp ID"]}</td>
+                  <td>{employee["Emp Name"]}</td>
+                  <td>{employee["Purpose of Travel"]}</td>
+                  <td>{employee["Travel from"]}</td>
+                  <td>{employee["Travel to"]}</td>
+                  <td>{employee["Date from"]}</td>
+                  <td>{employee["Date To"]}</td>
+                  <td>{employee["Flight"]}</td>
+                  <td>{employee["Hotac"]}</td>
+                  <td>{employee["Perdiem"]}</td>
+                  <td>{employee["Other cost"]}</td>
+                  <td>{employee["Total Cost"]}</td>
+                  <td>{employee["Comments if Any"]}</td>
+                  <td>
+                    <div style={{ display: "flex" }}>
+                      <FontAwesomeIcon
+                        className="icons p-2"
+                        icon={faExternalLink}
+                        onClick={() => {
+                          settingtheupdatevalue(employee.id);
+                        }}
+                      />
+                      <FontAwesomeIcon
+                        className="icons p-2"
+                        icon={faTrash}
+                        onClick={() => {
+                          handleShow();
+                          setBookingidtodelete(employee.id);
+                          setEmpidfilterafterdelete(employee["Emp ID"]);
+                        }}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );
