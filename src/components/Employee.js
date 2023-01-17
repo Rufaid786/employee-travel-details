@@ -29,20 +29,23 @@ function Employee() {
   const redirect = () => {
     navigate("/employeeform");
   };
-
-  useEffect(() => {
+  const getallEmployees = () => {
     Employeeservices.getEmployees()
       .then((success) => {
         setEmployees(success.data);
         setConstantemployees(success.data);
-        setUpdatevalue("");
       })
       .catch((error) => console.log(error));
+  };
+  useEffect(() => {
+    setUpdatevalue("");
+    getallEmployees();
   }, []);
   const filterfunction = (empid) => {
+    // getallEmployees();
     console.log(empid);
     const filterfind = constantemployees.filter((employee) => {
-      if (employee["Emp ID"] == empid) {
+      if (employee["Emp ID"] === empid) {
         return true;
       } else {
         return false;
@@ -74,6 +77,13 @@ function Employee() {
       setempidspan("");
     }
   };
+  const deleteEmployee = (bookid) => {
+    Employeeservices.deleteEmployeebyid(bookid)
+      .then((success) => {
+        console.log(success.data);
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <div className="p-4" style={{ background: "#f0f2f5" }}>
       <div class="row mb-3">
@@ -82,10 +92,8 @@ function Employee() {
             <input
               type="text"
               className="text-box"
-              onChange={(e) => setEmployeeid(e.target.value)}
-              onKeyUp={(e) => {
+              onChange={(e) => {
                 employeeidvalidation(e.target.value);
-                // filterfunction(updatevalue)
               }}
               placeholder="Employee Id to update"
             />
@@ -105,6 +113,9 @@ function Employee() {
         <Tablecomponent
           settingtheupdatevalue={settingtheupdatevalue}
           filteredeemployeevalues={filteredeemployeevalues}
+          deleteEmployee={deleteEmployee}
+          filterfunction={filterfunction}
+          getallEmployees={getallEmployees}
         />
       ) : null}
     </div>

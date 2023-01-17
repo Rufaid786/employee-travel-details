@@ -4,3 +4,8 @@
   overflow-x: "auto";
   overflow-y: "auto";
 }
+.icons:hover {
+  cursor: pointer;
+  background: rgb(33 112 229);
+  border-radius: 5px;
+}
