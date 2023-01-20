@@ -56,16 +56,15 @@ function Employee() {
 
   const employeeidvalidation = (id) => {
     if (id.length > 0) {
-      Employeeservices.geteid(id)
+      Employeeservices.getEmployeebyempid(id)
         .then((success) => {
-          if (typeof success.data == "string") {
-            setShowtable(false);
-            setempidspan(success.data);
-          } else {
+          if (typeof success.data === "object") {
             setShowtable(true);
-
             setempidspan("");
             filterfunction(id);
+          } else {
+            setShowtable(false);
+            setempidspan(success.data);
           }
         })
         .catch((error) => {
