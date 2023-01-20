@@ -1,0 +1,11 @@
+.main-card {
+  max-width: "800px";
+  max-height: "540px";
+  overflow-x: "auto";
+  overflow-y: "auto";
+}
+.icons:hover {
+  cursor: pointer;
+  background: rgb(33 112 229);
+  border-radius: 5px;
+}

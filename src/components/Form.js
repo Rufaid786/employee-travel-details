@@ -6,6 +6,8 @@ import { bookingid } from "./Employee";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import "./Form.css";
+
 function Form() {
   const [show, setShow] = useState(false);
 
@@ -29,30 +31,118 @@ function Form() {
   const [totalcost, setTotalcost] = useState("");
   const [commentsifany, setcommentsifany] = useState("");
 
+  const [countryfrom, setCountryfrom] = useState("");
+  const [statefrom, setStatefrom] = useState("");
+  const [cityfrom, setCityfrom] = useState("");
+  const [countryto, setCountryto] = useState("");
+  const [stateto, setStateto] = useState("");
+  const [cityto, setCityto] = useState("");
+  const [countryfromspan, setCountryfromspan] = useState("");
+  const [statefromspan, setStatefromspan] = useState("");
+  const [cityfromspan, setCityfromspan] = useState("");
+  const [countrytospan, setCountrytospan] = useState("");
+  const [statetospan, setStatetospan] = useState("");
+  const [citytospan, setCitytospan] = useState("");
+
   const [empidspan, setempidspan] = useState("");
   const [emp, setEmp] = useState([]);
+
   const [purposeoftravelspan, setPurposeoftravelspan] = useState("");
-  const [travelfromspan, setTravelfromspan] = useState("");
   const [traveltospan, setTraveltospan] = useState("");
   const [datefromspan, setDatefromspan] = useState("");
   const [datetospan, setDatetospan] = useState("");
   const [empidnav, setEmpidnav] = useState("");
   const navigate = useNavigate();
+
   const redirect = () => {
     navigate("/employeesection");
   };
+  const [approved, setApproved] = useState("unapproved");
+  const [data, setData] = useState([]);
+
+  const [statesdatafrom, setStatesdatafrom] = useState([]);
+  const [citiesdatafrom, setCitiesdatafrom] = useState([]);
+  const [statesdatato, setStatesdatato] = useState([]);
+  const [citiesdatato, setCitiesdatato] = useState([]);
+  const getcoutrycitystate = () => {
+    Employeeservices.getCountrycitystate()
+      .then((success) => {
+        setData(success.data);
+        console.log(success.data);
+      })
+      .catch((error) => console.log(error));
+  };
+  // finding countries from the dataset.Set is used for unique values means same country will be repeated again and again.By using set repeatation can be avoided.
+  // ...is used to conver set back into array.Hence uniquecountries will be an array with unique country names.
+  const countries = [...new Set(data.map((item) => item.country))];
+  countries.sort();
+
+  const handlecountryfrom = (event) => {
+    setCountryfrom(event);
+    setCountryfromspan("");
+    let uniquestatesfrom = data.filter((state) => state.country === event);
+    uniquestatesfrom = [
+      ...new Set(uniquestatesfrom.map((state) => state.subcountry)),
+    ];
+    uniquestatesfrom.sort();
+    setStatesdatafrom(uniquestatesfrom);
+  };
+  const handlestatesfrom = (event) => {
+    setStatefrom(event);
+    setStatefromspan("");
+    let uniquecitiesfrom = data.filter((city) => city.subcountry === event);
+    uniquecitiesfrom = [...new Set(uniquecitiesfrom.map((city) => city.name))];
+    uniquecitiesfrom.sort();
+    setCitiesdatafrom(uniquecitiesfrom);
+  };
+
+  const handlecountryto = (event) => {
+    setCountryto(event);
+    setCountrytospan("");
+    let uniquestatesto = data.filter((state) => state.country === event);
+    uniquestatesto = [
+      ...new Set(uniquestatesto.map((state) => state.subcountry)),
+    ];
+    uniquestatesto.sort();
+    setStatesdatato(uniquestatesto);
+  };
+  const handlestatesto = (event) => {
+    setStateto(event);
+    setStatetospan("");
+    let uniquecitiesto = data.filter((city) => city.subcountry === event);
+    uniquecitiesto = [...new Set(uniquecitiesto.map((city) => city.name))];
+    uniquecitiesto.sort();
+    setCitiesdatato(uniquecitiesto);
+  };
+  const handletravelfrom = (city) => {
+    setCityfrom(city);
+    console.log(city);
+    setCityfromspan("");
+  };
+  const handletravelto = (city) => {
+    console.log(city);
+    setCityto(city);
+    setCitytospan("");
+  };
+
   useEffect(() => {
+    getcoutrycitystate();
     if (bid) {
       setId(bid);
       Employeeservices.getEmployeebyid(bid)
         .then((success) => {
+          console.log(success);
           setAccount(success.data.Account);
           setProject(success.data["Project/Contract"]);
           setEmpid(success.data["Emp ID"]);
           setEmpname(success.data["Emp Name"]);
           setPurposeoftravel(success.data["Purpose of Travel"]);
-          setTravelfrom(success.data["Travel from"]);
-          setTravelto(success.data["Travel to"]);
+          setCountryfrom(success.data["Travel from"].split(",")[0]);
+          setStatefrom(success.data["Travel from"].split(",")[1]);
+          setCityfrom(success.data["Travel from"].split(",")[2]);
+          setCountryto(success.data["Travel to"].split(",")[0]);
+          setStateto(success.data["Travel to"].split(",")[1]);
+          setCityto(success.data["Travel to"].split(",")[2]);
           setDatefrom(success.data["Date from"]);
           setDateto(success.data["Date To"]);
           setFlight(success.data.Flight);
@@ -75,9 +165,9 @@ function Form() {
     setTotalcost(req);
   };
   const saveEmployee = (e) => {
-    e.preventDefault();
-    // uuidv4().slice(0, 6),
+    console.log(e);
 
+    e.preventDefault();
     const employee = {
       id,
       account,
@@ -95,6 +185,7 @@ function Form() {
       othercost,
       totalcost,
       commentsifany,
+      approved,
     };
     Employeeservices.addemployee(employee)
       .then((success) => {
@@ -102,18 +193,18 @@ function Form() {
       })
       .catch((error) => console.log(error));
 
-    // alert(
-    //   "Employee details Saved successfully with id " +
-    //     id +
-    //     " please Keep this id for future purpose"
-    // );
     setAccount("");
     setProject("");
     setEmpid("");
     setEmpname("");
     setPurposeoftravel("");
-    setTravelfrom("");
-    setTravelto("");
+    setCountryfrom("");
+    setStatefrom("");
+    setCityfrom("");
+    setCountryto("");
+    setStateto("");
+    setCityto("");
+
     setDatefrom("");
     setDateto("");
     setFlight("");
@@ -131,8 +222,12 @@ function Form() {
     setEmpid("");
     setEmpname("");
     setPurposeoftravel("");
-    setTravelfrom("");
-    setTravelto("");
+    setCountryfrom("");
+    setStatefrom("");
+    setCityfrom("");
+    setCountryto("");
+    setStateto("");
+    setCityto("");
     setDatefrom("");
     setDateto("");
     setFlight("");
@@ -149,21 +244,41 @@ function Form() {
       return <h2 className="text-center">Employee Details add Form</h2>;
     }
   };
+  const alertwindow = () => {
+    if (bid) {
+      return (
+        <span style={{ fontSize: "18px" }}>
+          Are you sure you want to update the information?
+        </span>
+      );
+    } else {
+      return (
+        <span style={{ fontSize: "18px" }}>
+          Are you sure you want to Book a ticket?
+        </span>
+      );
+    }
+  };
   const getdetails = (id) => {
+    console.log(id);
     setempidspan("");
     if (id.length > 0) {
-      Employeeservices.geteid(id)
+      Employeeservices.getEmployeebyempid(id)
         .then((success) => {
-          setAccount(success.data.Account);
-          setProject(success.data["Project/Contract"]);
-          setEmpname(success.data["Emp Name"]);
-          setEmpidnav("");
+          if (typeof success.data == "string") {
+            setEmpidnav(success.data);
+            setAccount("");
+            setProject("");
+            setEmpname("");
+          } else {
+            setAccount(success.data.Account);
+            setProject(success.data["Project/Contract"]);
+            setEmpname(success.data["Emp Name"]);
+            setEmpidnav("");
+          }
         })
         .catch((error) => {
-          setEmpidnav("Empid Not found");
-          setAccount("");
-          setProject("");
-          setEmpname("");
+          console.log(error);
         });
     } else {
       setEmpidnav("");
@@ -179,11 +294,23 @@ function Form() {
     if (dateto) {
       setDatetospan("");
     }
-    if (travelfrom) {
-      setTravelfromspan("");
+    if (countryfrom) {
+      setCountryfromspan("");
     }
-    if (travelto) {
-      setTraveltospan("");
+    if (statefrom) {
+      setStatefromspan("");
+    }
+    if (cityfrom) {
+      setCityfromspan("");
+    }
+    if (countryto) {
+      setCountrytospan("");
+    }
+    if (stateto) {
+      setStatetospan("");
+    }
+    if (cityto) {
+      setCitytospan("");
     }
   };
   const validation = () => {
@@ -191,12 +318,23 @@ function Form() {
     purposeoftravel === ""
       ? setPurposeoftravelspan("This field is Required")
       : setPurposeoftravelspan("");
-    travelfrom === ""
-      ? setTravelfromspan("This field is Required")
-      : setTravelfromspan("");
-    travelto === ""
-      ? setTraveltospan("This field is Required")
-      : setTraveltospan("");
+    countryfrom === ""
+      ? setCountryfromspan("This field is Required")
+      : setCountryfromspan("");
+    statefrom === ""
+      ? setStatefromspan("This field is Required")
+      : setStatefromspan("");
+    cityfrom === ""
+      ? setCityfromspan("This field is Required")
+      : setCityfromspan("");
+    countryto === ""
+      ? setCountrytospan("This field is Required")
+      : setCountrytospan("");
+    stateto === ""
+      ? setStatetospan("This field is Required")
+      : setCitytospan("");
+    cityto === "" ? setCitytospan("This field is Required") : setCitytospan("");
+
     datefrom === ""
       ? setDatefromspan("This field is Required")
       : setDatetospan("");
@@ -204,33 +342,34 @@ function Form() {
     if (
       empid !== "" &&
       purposeoftravel !== "" &&
-      travelfrom !== "" &&
-      travelto !== "" &&
+      countryfrom !== "" &&
+      statefrom !== "" &&
+      cityfrom !== "" &&
+      countryto !== "" &&
+      stateto !== "" &&
+      cityto !== "" &&
       datefrom !== "" &&
       dateto !== ""
     ) {
+      setTravelfrom(countryfrom.concat(",", statefrom).concat(",", cityfrom));
+      setTravelto(countryto.concat(",", stateto).concat(",", cityto));
       handleShow();
     }
   };
+
   return (
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title className="text-danger">Alert!!!</Modal.Title>
+          <Modal.Title className="text-success">Alert!!!</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="text-center">
-          Employee details Saved successfully with{" "}
-          <span style={{ fontSize: "18px", fontWeight: "bold" }}>
-            Booking ID:{id}
-          </span>
-          .Please keep this ID for future purpose
-        </Modal.Body>
+        <Modal.Body className="text-center">{alertwindow()}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
           <Button
-            variant="primary"
+            variant="success"
             onClick={(e) => {
               saveEmployee(e);
             }}
@@ -239,64 +378,29 @@ function Form() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="container p-3" style={{ background: "#f0f2f5" }}>
+      <div style={{ background: "#f0f2f5" }}>
         {title()}
 
         <br></br>
-        <div className="card-body ml-3">
-          <form>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Account
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  type="text"
-                  value={account}
-                  onChange={(e) => setAccount(e.target.value)}
-                  class="form-control"
-                  id="account"
-                  placeholder="Account"
-                  disabled
-                />
-              </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Project/Contract
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={project}
-                  onChange={(e) => setProject(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="project"
-                  placeholder="Project/Contract"
-                  disabled
-                />
-              </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Emp ID<span style={{ color: "red", marginLeft: "5px" }}>*</span>
-              </label>
-              <div class="col-md-10 col-sm-10">
+        <div className="container">
+          {/* *************************************************************** */}
+          <div class="form-group row">
+            <header className="col-md-12">
+              <span style={{ fontSize: "2rem" }}>Employee Details</span>
+            </header>
+            <div className="row section p-2 mt-2 mb-3">
+              <div class="form-group mb-3 col-md-6 col-sm-12">
+                <label for="inputPassword">
+                  Emp ID
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </label>
+
                 <input
                   value={empid}
                   onChange={(e) => {
                     setEmpid(e.target.value);
+                    getdetails(e.target.value);
                   }}
-                  onKeyUp={(e) => getdetails(e.target.value)}
                   type="text"
                   class="form-control"
                   id="empid"
@@ -305,219 +409,288 @@ function Form() {
                 <span style={{ color: "red" }}>{empidnav}</span>
                 <span style={{ color: "red" }}>{empidspan}</span>
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Emp Name
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group col-md-6 col-sm-12">
+                <label for="inputPassword">Account</label>
+
+                <input
+                  type="text"
+                  value={account}
+                  onChange={(e) => setAccount(e.target.value)}
+                  class="form-control"
+                  id="account"
+                  disabled
+                />
+              </div>
+              <div class="form-group mb-3 col-md-6 col-sm-12">
+                <label for="inputPassword">Project/Contract</label>
+
+                <input
+                  value={project}
+                  onChange={(e) => setProject(e.target.value)}
+                  type="text"
+                  class="form-control"
+                  id="project"
+                  disabled
+                />
+              </div>
+              <div class="form-group  col-md-6 col-sm-12 mb-3">
+                <label for="empname">Emp Name</label>
                 <input
                   value={empname}
                   onChange={(e) => setEmpname(e.target.value)}
                   type="text"
                   class="form-control"
                   id="empname"
-                  placeholder="Employee Name"
                   disabled
                 />
               </div>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Purose of Travel
-                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={purposeoftravel}
-                  onChange={(e) => setPurposeoftravel(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="purposeoftravel"
-                  placeholder="Purpose"
-                  onKeyUp={() => keyupvalidation()}
-                />
-                <span style={{ color: "red" }}>{purposeoftravelspan}</span>
+          </div>
+          {/* ********************** Travel Details Beginning***************/}
+          <div class="form-group row">
+            <header className="col-md-12">
+              <span style={{ fontSize: "2rem" }}>Travel Details</span>
+            </header>
+            <div className="row section mb-3">
+              <div className="row p-2">
+                <div class="form-group col-md-4 mb-3 col-sm-12">
+                  <label for="purposeoftravel">
+                    Purpose of Travel
+                    <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                  </label>
+                  <input
+                    value={purposeoftravel}
+                    onChange={(e) => setPurposeoftravel(e.target.value)}
+                    type="text"
+                    class="form-control"
+                    id="purposeoftravel"
+                    placeholder="Purpose"
+                    onKeyUp={() => keyupvalidation()}
+                  />
+                  <span style={{ color: "red" }}>{purposeoftravelspan}</span>
+                </div>
+                <div class="form-group col-md-4 col-sm-12">
+                  <label for="datefrom">
+                    Date From
+                    <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                  </label>
+
+                  <input
+                    value={datefrom}
+                    onChange={(e) => {
+                      setDatefrom(e.target.value);
+                      setDatefromspan(" ");
+                    }}
+                    type="date"
+                    class="form-control"
+                    id="datefrom"
+                  />
+                  <span style={{ color: "red" }}>{datefromspan}</span>
+                </div>
+                <div class="form-group col-md-4 mb-3 col-sm-12">
+                  <label for="dateto">
+                    Date To
+                    <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                  </label>
+
+                  <input
+                    value={dateto}
+                    onChange={(e) => {
+                      setDateto(e.target.value);
+                      setDatetospan(" ");
+                    }}
+                    type="Date"
+                    class="form-control"
+                    id="dateto"
+                  />
+                  <span style={{ color: "red" }}>{datetospan} </span>
+                </div>
+              </div>
+              <div className="row p-2">
+                <span>
+                  Travel From
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </span>
+                <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <select
+                    values={countryfrom}
+                    class="form-select"
+                    onChange={(e) => {
+                      handlecountryfrom(e.target.value);
+                    }}
+                  >
+                    <option>{countryfrom}</option>
+                    {countries.map((country) => (
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                  <span style={{ color: "red" }}>{countryfromspan}</span>
+                </div>
+                <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <select
+                    value={statefrom}
+                    class="form-select"
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      handlestatesfrom(e.target.value);
+                    }}
+                  >
+                    <option selected>{statefrom}</option>
+                    {statesdatafrom.map((items) => (
+                      <option key={items} value={items}>
+                        {items}
+                      </option>
+                    ))}
+                  </select>
+                  <span style={{ color: "red" }}>{statefromspan}</span>
+                </div>
+                <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <select
+                    class="form-select"
+                    value={cityfrom}
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      handletravelfrom(e.target.value);
+                    }}
+                  >
+                    <option selected>{cityfrom}</option>
+                    {citiesdatafrom.map((items) => (
+                      <option key={items} value={items}>
+                        {items}
+                      </option>
+                    ))}
+                  </select>
+                  <span style={{ color: "red" }}>{cityfromspan}</span>
+                </div>
+              </div>
+              <div className="row p-2">
+                <span>
+                  Travel To
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </span>
+                <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <select
+                    class="form-select"
+                    value={countryto}
+                    onChange={(e) => {
+                      handlecountryto(e.target.value);
+                    }}
+                  >
+                    <option>{countryto}</option>
+                    {countries.map((country) => (
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                  <span style={{ color: "red" }}>{countrytospan}</span>
+                </div>
+                <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <select
+                    value={stateto}
+                    class="form-select"
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      handlestatesto(e.target.value);
+                    }}
+                  >
+                    <option>{stateto}</option>
+                    {statesdatato.map((items) => (
+                      <option key={items} value={items}>
+                        {items}
+                      </option>
+                    ))}
+                  </select>
+                  <span style={{ color: "red" }}>{statetospan}</span>
+                </div>
+                <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <select
+                    value={cityto}
+                    class="form-select"
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      handletravelto(e.target.value);
+                    }}
+                  >
+                    <option>{cityto}</option>
+                    {citiesdatato.map((items) => (
+                      <option key={items} value={items}>
+                        {items}
+                      </option>
+                    ))}
+                  </select>
+                  <span style={{ color: "red" }}>{citytospan}</span>
+                </div>
               </div>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Travel From
-                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={travelfrom}
-                  onChange={(e) => setTravelfrom(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="travelfrom"
-                  placeholder="Travel From"
-                  onKeyUp={() => keyupvalidation()}
-                />
-                <span style={{ color: "red" }}>{travelfromspan}</span>
-              </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Travel To
-                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={travelto}
-                  onChange={(e) => setTravelto(e.target.value)}
-                  type="text"
-                  class="form-control"
-                  id="travelto"
-                  placeholder="Travel To"
-                  onKeyUp={() => keyupvalidation()}
-                />
-                <span style={{ color: "red" }}>{traveltospan}</span>
-              </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Date From
-                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={datefrom}
-                  onChange={(e) => {
-                    setDatefrom(e.target.value);
-                    setDatefromspan(" ");
-                  }}
-                  type="date"
-                  class="form-control"
-                  id="datefrom"
-                />
-                <span style={{ color: "red" }}>{datefromspan}</span>
-              </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Date To
-                <span style={{ color: "red", marginLeft: "5px" }}>*</span>
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  value={dateto}
-                  onChange={(e) => {
-                    setDateto(e.target.value);
-                    setDatetospan(" ");
-                  }}
-                  type="Date"
-                  class="form-control"
-                  id="dateto"
-                />
-                <span style={{ color: "red" }}>{datetospan}</span>
-              </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Flight
-              </label>
-              <div class="col-md-10 col-sm-10">
+          </div>
+          {/* ****************************************
+                    Cost section Beginning
+                ************************************** */}
+          <div class="form-group row">
+            <header className="col-md-12">
+              <span style={{ fontSize: "2rem" }}>Cost Estimation</span>
+            </header>
+            <div className="row section p-2 mb-3">
+              <div class="form-group mb-3 col-md-6 col-sm-12">
+                <label for="flightcost">Flight Cost</label>
+
                 <input
                   value={flight}
                   onChange={(e) => setFlight(e.target.value)}
                   onKeyUp={() => findsum()}
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="flight"
                   placeholder="Flight Cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Hotac
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group col-md-6 col-sm-12">
+                <label for="Hotaccost">Hotac Cost</label>
+
                 <input
                   value={hotac}
                   onChange={(e) => setHotac(e.target.value)}
                   onKeyUp={() => findsum()}
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="hotac"
                   placeholder="Hotac cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Perdium
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group mb-3 col-md-6 col-sm-12">
+                <label for="perdiumcost">Perdium Cost</label>
+
                 <input
                   value={perdiem}
                   onChange={(e) => setPerdium(e.target.value)}
                   onKeyUp={() => findsum()}
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="perdium"
                   placeholder="Perdium cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center"
-              >
-                Other cost
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group  col-md-6 col-sm-12">
+                <label for="othercost">Other cost</label>
+
                 <input
                   value={othercost}
                   onChange={(e) => setOthercost(e.target.value)}
                   onKeyUp={() => findsum()}
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="othercost"
                   placeholder="Other cost"
                 />
               </div>
-            </div>
-            <div class="form-group row mb-3">
-              <label
-                for="inputPassword"
-                class="col-md-2 col-sm-2 col-form-label text-center align-items-center"
-              >
-                Total Cost
-              </label>
-              <div class="col-md-10 col-sm-10">
+              <div class="form-group  mb-3 col-md-3 col-sm-12">
+                <label for="totalcost">Total Cost</label>
+
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   id="totalcost"
                   value={totalcost}
@@ -525,45 +698,48 @@ function Form() {
                 />
               </div>
             </div>
-            <div class="form-group row mb-3">
-              <label
-                for="comments"
-                class="col-md-2 col-sm-2 col-form-label text-center"
+          </div>
+
+          {/* ***************************************
+          Cost Section End
+          ************************ */}
+          <div class="form-group row">
+            <div class="col-md-4 col-sm-10">
+              <label for="comments">Comments if Any:</label>
+
+              <textarea
+                rows="5"
+                class="form-control mt-2 section"
+                id="commentsifany"
+                value={commentsifany}
+                onChange={(e) => setcommentsifany(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div class="form-group row mt-3">
+            <div
+              className="mb-5"
+              style={{ display: "flex", justifyContent: "space-around" }}
+            >
+              <Button
+                variant="primary"
+                onClick={() => {
+                  validation();
+                  // check();
+                }}
               >
-                Comments if Any:
-              </label>
-              <div class="col-md-10 col-sm-10">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="commentsifany"
-                  value={commentsifany}
-                  onChange={(e) => setcommentsifany(e.target.value)}
-                />
-              </div>
+                Submit
+              </Button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => reset()}
+              >
+                Clear All
+              </button>
             </div>
-            <div class="form-group row mb-3">
-              <div class="offset-md-2 col-md-2 mt-3">
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    validation();
-                  }}
-                >
-                  Submit
-                </Button>
-              </div>
-              <div class="offset-md-6 col-md-2 mt-3">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => reset()}
-                >
-                  Clear All
-                </button>
-              </div>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </>
