@@ -263,7 +263,7 @@ function Form() {
     console.log(id);
     setempidspan("");
     if (id.length > 0) {
-      Employeeservices.geteid(id)
+      Employeeservices.getEmployeebyempid(id)
         .then((success) => {
           if (typeof success.data == "string") {
             setEmpidnav(success.data);
@@ -399,8 +399,8 @@ function Form() {
                   value={empid}
                   onChange={(e) => {
                     setEmpid(e.target.value);
+                    getdetails(e.target.value);
                   }}
-                  onKeyUp={(e) => getdetails(e.target.value)}
                   type="text"
                   class="form-control"
                   id="empid"
@@ -709,7 +709,7 @@ function Form() {
 
               <textarea
                 rows="5"
-                class="form-control mt-2"
+                class="form-control mt-2 section"
                 id="commentsifany"
                 value={commentsifany}
                 onChange={(e) => setcommentsifany(e.target.value)}

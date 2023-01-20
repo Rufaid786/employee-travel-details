@@ -28,11 +28,18 @@ class Employeeservices {
     );
   }
 
+  getPmoValidation(email, password) {
+    return axios.get(baseurl + "Pmo?email=" + email + "&password=" + password);
+  }
   geteid(id) {
     return axios.get(
       "https://yqiwczwecb.execute-api.ap-south-1.amazonaws.com/empdim?empid=" +
         id
     );
+  }
+
+  getEmployeebyempid(eid) {
+    return axios.get(baseurl + "employeeid?empid=" + eid);
   }
 
   getCountrycitystate() {

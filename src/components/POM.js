@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Employeeservices from "../Services/Employeeservices";
 import Csvform from "./Csvform";
 
 function POM() {
@@ -7,13 +8,17 @@ function POM() {
   const [password, setPassword] = useState("");
   const [span, setSpan] = useState("");
   const validation = () => {
-    if (email === "Pmo@gmail.com" && password === "Pmo@123") {
-      setSpan("");
-      setShowResults(true);
-    } else {
-      setShowResults(false);
-      setSpan("Please provide correct email and password");
-    }
+    Employeeservices.getPmoValidation(email, password)
+      .then((success) => {
+        if (success.data === "Login Success") {
+          setSpan("");
+          setShowResults(true);
+        } else {
+          setShowResults(false);
+          setSpan(success.data);
+        }
+      })
+      .catch((error) => console.log(error));
   };
   return (
     <div className="p-5" style={{ background: "#f0f2f5" }}>
