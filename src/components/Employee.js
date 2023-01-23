@@ -42,7 +42,7 @@ function Employee() {
     getallEmployees();
   }, []);
   const filterfunction = (empid) => {
-    // getallEmployees();
+    getallEmployees();
     console.log(empid);
     const filterfind = constantemployees.filter((employee) => {
       if (employee["Emp ID"] === empid) {
@@ -53,7 +53,18 @@ function Employee() {
     });
     setFilteredemployeevalues(filterfind);
   };
-
+  const filterafterdelete = (bookingId) => {
+    console.log(bookingId);
+    const filterfind = filteredeemployeevalues.filter((employee) => {
+      if (employee["id"] === bookingId) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    setFilteredemployeevalues(filterfind);
+    console.log(filterfind);
+  };
   const employeeidvalidation = (id) => {
     if (id.length > 0) {
       Employeeservices.getEmployeebyempid(id)
@@ -80,6 +91,7 @@ function Employee() {
     Employeeservices.deleteEmployeebyid(bookid)
       .then((success) => {
         console.log(success.data);
+        filterafterdelete(bookid);
       })
       .catch((error) => console.log(error));
   };
