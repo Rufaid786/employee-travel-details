@@ -17,7 +17,6 @@ function Tablecomponent({
   const [empidfilterafterdelete, setEmpidfilterafterdelete] = useState("");
   const handleClose = () => {
     setShow(false);
-    getallEmployees();
   };
   const handleShow = () => setShow(true);
   return (
@@ -38,9 +37,6 @@ function Tablecomponent({
             onClick={() => {
               handleClose();
               deleteEmployee(bookingidtodelete);
-              getallEmployees();
-
-              filterfunction(empidfilterafterdelete);
             }}
           >
             Yes
