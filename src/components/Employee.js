@@ -15,13 +15,11 @@ function Employee() {
   const [employees, setEmployees] = useState([]);
   const [constantemployees, setConstantemployees] = useState([]);
   const [updatevalue, setUpdatevalue] = useRecoilState(bookingid);
-
-  const [employeeid, setEmployeeid] = useState("");
-  const [validationspan, setValidationspan] = useState("");
   const [filteredeemployeevalues, setFilteredemployeevalues] =
     useState(employees);
   const [empidspan, setempidspan] = useState("");
   const [showtable, setShowtable] = useState(false);
+  const [searchvalue, setSearchvalue] = useState("");
   const settingtheupdatevalue = (id) => {
     setUpdatevalue(id);
     redirect();
@@ -65,6 +63,9 @@ function Employee() {
     setFilteredemployeevalues(filterfind);
     console.log(filterfind);
   };
+  useEffect(() => {
+    employeeidvalidation(searchvalue);
+  }, [searchvalue]);
   const employeeidvalidation = (id) => {
     if (id.length > 0) {
       Employeeservices.getEmployeebyempid(id)
@@ -103,8 +104,9 @@ function Employee() {
             <input
               type="text"
               className="text-box"
+              value={searchvalue}
               onChange={(e) => {
-                employeeidvalidation(e.target.value);
+                setSearchvalue(e.target.value);
               }}
               placeholder="Employee Id to update"
             />

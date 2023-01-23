@@ -98,6 +98,9 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
                 {...filteredreport}
                 className="btn btn-success mt-3 mb-2"
                 style={{ marginLeft: "20px" }}
+                // onClick={() => {
+                //   setExportshow(false);
+                // }}
               >
                 Export
               </CSVLink>

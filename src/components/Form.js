@@ -701,7 +701,7 @@ function Form() {
           </div>
 
           {/* ***************************************
-          Cost Section End
+            Cost Section End
           ************************ */}
           <div class="form-group row">
             <div class="col-md-4 col-sm-10">
