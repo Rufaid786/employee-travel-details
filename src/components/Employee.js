@@ -15,13 +15,11 @@ function Employee() {
   const [employees, setEmployees] = useState([]);
   const [constantemployees, setConstantemployees] = useState([]);
   const [updatevalue, setUpdatevalue] = useRecoilState(bookingid);
-
-  const [employeeid, setEmployeeid] = useState("");
-  const [validationspan, setValidationspan] = useState("");
   const [filteredeemployeevalues, setFilteredemployeevalues] =
     useState(employees);
   const [empidspan, setempidspan] = useState("");
   const [showtable, setShowtable] = useState(false);
+  const [searchvalue, setSearchvalue] = useState("");
   const settingtheupdatevalue = (id) => {
     setUpdatevalue(id);
     redirect();
@@ -39,7 +37,6 @@ function Employee() {
   };
   useEffect(() => {
     setUpdatevalue("");
-    getallEmployees();
   }, []);
   const filterfunction = (empid) => {
     getallEmployees();
@@ -65,6 +62,10 @@ function Employee() {
     setFilteredemployeevalues(filterfind);
     console.log(filterfind);
   };
+  useEffect(() => {
+    getallEmployees();
+    employeeidvalidation(searchvalue);
+  }, [searchvalue]);
   const employeeidvalidation = (id) => {
     if (id.length > 0) {
       Employeeservices.getEmployeebyempid(id)
@@ -103,10 +104,11 @@ function Employee() {
             <input
               type="text"
               className="text-box"
+              value={searchvalue}
               onChange={(e) => {
-                employeeidvalidation(e.target.value);
+                setSearchvalue(e.target.value);
               }}
-              placeholder="Employee Id to update"
+              placeholder="Enter EmpID to update"
             />
             <span style={{ color: "red" }}>{empidspan}</span>
           </div>
@@ -116,7 +118,7 @@ function Employee() {
             onClick={() => redirect()}
           >
             <FontAwesomeIcon icon={faPlus} style={{ marginRight: "7px" }} />
-            <span>Add Employee</span>
+            <span>Add Travel Request</span>
           </button>
         </div>
       </div>

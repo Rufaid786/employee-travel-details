@@ -43,12 +43,13 @@ function Form() {
   const [countrytospan, setCountrytospan] = useState("");
   const [statetospan, setStatetospan] = useState("");
   const [citytospan, setCitytospan] = useState("");
+  const [currency, setCurrency] = useState("");
 
   const [empidspan, setempidspan] = useState("");
   const [emp, setEmp] = useState([]);
 
   const [purposeoftravelspan, setPurposeoftravelspan] = useState("");
-  const [traveltospan, setTraveltospan] = useState("");
+
   const [datefromspan, setDatefromspan] = useState("");
   const [datetospan, setDatetospan] = useState("");
   const [empidnav, setEmpidnav] = useState("");
@@ -64,6 +65,7 @@ function Form() {
   const [citiesdatafrom, setCitiesdatafrom] = useState([]);
   const [statesdatato, setStatesdatato] = useState([]);
   const [citiesdatato, setCitiesdatato] = useState([]);
+
   const getcoutrycitystate = () => {
     Employeeservices.getCountrycitystate()
       .then((success) => {
@@ -159,11 +161,6 @@ function Form() {
     }
   }, []);
 
-  const findsum = () => {
-    let req =
-      Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
-    setTotalcost(req);
-  };
   const saveEmployee = (e) => {
     console.log(e);
 
@@ -239,9 +236,9 @@ function Form() {
   };
   const title = () => {
     if (bid) {
-      return <h2 className="text-center">Employee Details Update Form</h2>;
+      return <h2 className="text-center">Request Update Form</h2>;
     } else {
-      return <h2 className="text-center">Employee Details add Form</h2>;
+      return <h2 className="text-center">Travel Request Form</h2>;
     }
   };
   const alertwindow = () => {
@@ -266,7 +263,6 @@ function Form() {
       Employeeservices.getEmployeebyempid(id)
         .then((success) => {
           if (typeof success.data == "string") {
-            setEmpidnav(success.data);
             setAccount("");
             setProject("");
             setEmpname("");
@@ -356,7 +352,30 @@ function Form() {
       handleShow();
     }
   };
-
+  useEffect(() => {
+    dateValidation();
+  }, [dateto]);
+  const dateValidation = () => {
+    if (datefrom > dateto) {
+      setDatetospan("Please choose a valid date range");
+    } else {
+      setDatetospan("");
+    }
+  };
+  const currencyConversion = () => {
+    if (currency === "Indian Rupee") {
+      let req =
+        Number(flight) * 0.01225 +
+        Number(hotac) * 0.01225 +
+        Number(perdiem) * 0.01225 +
+        Number(othercost) * 0.01225;
+      setTotalcost(req);
+    } else {
+      let req =
+        Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
+      setTotalcost(req);
+    }
+  };
   return (
     <>
       <Modal show={show} onHide={handleClose}>
@@ -418,7 +437,6 @@ function Form() {
                   onChange={(e) => setAccount(e.target.value)}
                   class="form-control"
                   id="account"
-                  disabled
                 />
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
@@ -430,7 +448,6 @@ function Form() {
                   type="text"
                   class="form-control"
                   id="project"
-                  disabled
                 />
               </div>
               <div class="form-group  col-md-6 col-sm-12 mb-3">
@@ -441,7 +458,6 @@ function Form() {
                   type="text"
                   class="form-control"
                   id="empname"
-                  disabled
                 />
               </div>
             </div>
@@ -497,7 +513,6 @@ function Form() {
                     value={dateto}
                     onChange={(e) => {
                       setDateto(e.target.value);
-                      setDatetospan(" ");
                     }}
                     type="Date"
                     class="form-control"
@@ -512,7 +527,9 @@ function Form() {
                   <span style={{ color: "red", marginLeft: "5px" }}>*</span>
                 </span>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="countryfrom">Country:</label>
                   <select
+                    name="countryfrom"
                     values={countryfrom}
                     class="form-select"
                     onChange={(e) => {
@@ -529,7 +546,9 @@ function Form() {
                   <span style={{ color: "red" }}>{countryfromspan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="statefrom">State:</label>
                   <select
+                    name="statefrom"
                     value={statefrom}
                     class="form-select"
                     aria-label="Default select example"
@@ -547,7 +566,9 @@ function Form() {
                   <span style={{ color: "red" }}>{statefromspan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="cityfrom">City:</label>
                   <select
+                    name="cityfrom"
                     class="form-select"
                     value={cityfrom}
                     aria-label="Default select example"
@@ -571,7 +592,9 @@ function Form() {
                   <span style={{ color: "red", marginLeft: "5px" }}>*</span>
                 </span>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="countryto">Country:</label>
                   <select
+                    name="countryto"
                     class="form-select"
                     value={countryto}
                     onChange={(e) => {
@@ -588,7 +611,9 @@ function Form() {
                   <span style={{ color: "red" }}>{countrytospan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="stateto">State:</label>
                   <select
+                    name="stateto"
                     value={stateto}
                     class="form-select"
                     aria-label="Default select example"
@@ -606,7 +631,9 @@ function Form() {
                   <span style={{ color: "red" }}>{statetospan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="cityto">City:</label>
                   <select
+                    name="cityto"
                     value={cityto}
                     class="form-select"
                     aria-label="Default select example"
@@ -634,31 +661,48 @@ function Form() {
               <span style={{ fontSize: "2rem" }}>Cost Estimation</span>
             </header>
             <div className="row section p-2 mb-3">
+              <div className="row">
+                <div class="form-group mb-3 col-md-3 col-sm-12">
+                  <label for="currencyselection">Choose your currency:</label>
+                  <select
+                    class="form-select"
+                    name="currencyselection"
+                    onChange={(e) => setCurrency(e.target.value)}
+                  >
+                    <option value="Indian Rupee">Indian Rupee</option>
+                    <option value="United States Dollar">
+                      United States Dollar
+                    </option>
+                  </select>
+                </div>
+              </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
                 <label for="flightcost">Flight Cost</label>
-
-                <input
-                  value={flight}
-                  onChange={(e) => setFlight(e.target.value)}
-                  onKeyUp={() => findsum()}
-                  type="number"
-                  class="form-control"
-                  id="flight"
-                  placeholder="Flight Cost"
-                />
+                <div>
+                  <input
+                    value={flight}
+                    onChange={(e) => setFlight(e.target.value)}
+                    onKeyUp={() => currencyConversion()}
+                    type="number"
+                    class="form-control"
+                    id="flight"
+                    placeholder="Flight Cost"
+                  />
+                </div>
               </div>
               <div class="form-group col-md-6 col-sm-12">
                 <label for="Hotaccost">Hotac Cost</label>
-
-                <input
-                  value={hotac}
-                  onChange={(e) => setHotac(e.target.value)}
-                  onKeyUp={() => findsum()}
-                  type="number"
-                  class="form-control"
-                  id="hotac"
-                  placeholder="Hotac cost"
-                />
+                <div>
+                  <input
+                    value={hotac}
+                    onChange={(e) => setHotac(e.target.value)}
+                    onKeyUp={() => currencyConversion()}
+                    type="number"
+                    class="form-control"
+                    id="hotac"
+                    placeholder="Hotac cost"
+                  />
+                </div>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
                 <label for="perdiumcost">Perdium Cost</label>
@@ -666,7 +710,7 @@ function Form() {
                 <input
                   value={perdiem}
                   onChange={(e) => setPerdium(e.target.value)}
-                  onKeyUp={() => findsum()}
+                  onKeyUp={() => currencyConversion()}
                   type="number"
                   class="form-control"
                   id="perdium"
@@ -679,7 +723,7 @@ function Form() {
                 <input
                   value={othercost}
                   onChange={(e) => setOthercost(e.target.value)}
-                  onKeyUp={() => findsum()}
+                  onKeyUp={() => currencyConversion()}
                   type="number"
                   class="form-control"
                   id="othercost"
@@ -701,7 +745,7 @@ function Form() {
           </div>
 
           {/* ***************************************
-          Cost Section End
+            Cost Section End
           ************************ */}
           <div class="form-group row">
             <div class="col-md-4 col-sm-10">
