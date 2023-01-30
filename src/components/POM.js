@@ -1,25 +1,28 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Employeeservices from "../Services/Employeeservices";
-import Csvform from "./Csvform";
 
 function POM() {
-  const [showResults, setShowResults] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [span, setSpan] = useState("");
+  const navigate = useNavigate();
+  const changepage = () => {
+    navigate("/pmologinform");
+  };
   const validation = () => {
     Employeeservices.getPmoValidation(email, password)
       .then((success) => {
         if (success.data === "Login Success") {
           setSpan("");
-          setShowResults(true);
+          changepage();
         } else {
-          setShowResults(false);
           setSpan(success.data);
         }
       })
       .catch((error) => console.log(error));
   };
+
   return (
     <div className="p-5" style={{ background: "#f0f2f5" }}>
       <form>
@@ -67,15 +70,6 @@ function POM() {
         </button>
         <br></br>
         <span style={{ color: "red" }}>{span}</span>
-        <div>
-          {showResults ? (
-            <Csvform
-              setShowResults={setShowResults}
-              setEmail={setEmail}
-              setPassword={setPassword}
-            />
-          ) : null}
-        </div>
       </form>
     </div>
   );

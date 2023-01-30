@@ -37,7 +37,6 @@ function Employee() {
   };
   useEffect(() => {
     setUpdatevalue("");
-    getallEmployees();
   }, []);
   const filterfunction = (empid) => {
     getallEmployees();
@@ -64,6 +63,7 @@ function Employee() {
     console.log(filterfind);
   };
   useEffect(() => {
+    getallEmployees();
     employeeidvalidation(searchvalue);
   }, [searchvalue]);
   const employeeidvalidation = (id) => {
@@ -108,7 +108,7 @@ function Employee() {
               onChange={(e) => {
                 setSearchvalue(e.target.value);
               }}
-              placeholder="Employee Id to update"
+              placeholder="Enter EmpID to update"
             />
             <span style={{ color: "red" }}>{empidspan}</span>
           </div>
@@ -118,7 +118,7 @@ function Employee() {
             onClick={() => redirect()}
           >
             <FontAwesomeIcon icon={faPlus} style={{ marginRight: "7px" }} />
-            <span>Add Employee</span>
+            <span>Add Travel Request</span>
           </button>
         </div>
       </div>
