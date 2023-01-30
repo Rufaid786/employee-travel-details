@@ -4,10 +4,12 @@ import { v4 as uuidv4 } from "uuid";
 import { useRecoilValue } from "recoil";
 import { bookingid } from "./Employee";
 import { useNavigate } from "react-router-dom";
+import { rupeetoDollar } from "./Currencyconversion";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+// import { Form } from "react-bootstrap";
 import "./Form.css";
-
+import Records from "./Records.json";
 function Form() {
   const [show, setShow] = useState(false);
 
@@ -30,7 +32,6 @@ function Form() {
   const [othercost, setOthercost] = useState("");
   const [totalcost, setTotalcost] = useState("");
   const [commentsifany, setcommentsifany] = useState("");
-
   const [countryfrom, setCountryfrom] = useState("");
   const [statefrom, setStatefrom] = useState("");
   const [cityfrom, setCityfrom] = useState("");
@@ -59,30 +60,21 @@ function Form() {
     navigate("/employeesection");
   };
   const [approved, setApproved] = useState("unapproved");
-  const [data, setData] = useState([]);
 
   const [statesdatafrom, setStatesdatafrom] = useState([]);
   const [citiesdatafrom, setCitiesdatafrom] = useState([]);
   const [statesdatato, setStatesdatato] = useState([]);
   const [citiesdatato, setCitiesdatato] = useState([]);
 
-  const getcoutrycitystate = () => {
-    Employeeservices.getCountrycitystate()
-      .then((success) => {
-        setData(success.data);
-        console.log(success.data);
-      })
-      .catch((error) => console.log(error));
-  };
   // finding countries from the dataset.Set is used for unique values means same country will be repeated again and again.By using set repeatation can be avoided.
-  // ...is used to conver set back into array.Hence uniquecountries will be an array with unique country names.
-  const countries = [...new Set(data.map((item) => item.country))];
+  // ...is used to convert set back into array.Hence uniquecountries will be an array with unique country names.
+  const countries = [...new Set(Records.map((item) => item.country))];
   countries.sort();
 
   const handlecountryfrom = (event) => {
     setCountryfrom(event);
     setCountryfromspan("");
-    let uniquestatesfrom = data.filter((state) => state.country === event);
+    let uniquestatesfrom = Records.filter((state) => state.country === event);
     uniquestatesfrom = [
       ...new Set(uniquestatesfrom.map((state) => state.subcountry)),
     ];
@@ -92,7 +84,7 @@ function Form() {
   const handlestatesfrom = (event) => {
     setStatefrom(event);
     setStatefromspan("");
-    let uniquecitiesfrom = data.filter((city) => city.subcountry === event);
+    let uniquecitiesfrom = Records.filter((city) => city.subcountry === event);
     uniquecitiesfrom = [...new Set(uniquecitiesfrom.map((city) => city.name))];
     uniquecitiesfrom.sort();
     setCitiesdatafrom(uniquecitiesfrom);
@@ -101,7 +93,7 @@ function Form() {
   const handlecountryto = (event) => {
     setCountryto(event);
     setCountrytospan("");
-    let uniquestatesto = data.filter((state) => state.country === event);
+    let uniquestatesto = Records.filter((state) => state.country === event);
     uniquestatesto = [
       ...new Set(uniquestatesto.map((state) => state.subcountry)),
     ];
@@ -111,7 +103,7 @@ function Form() {
   const handlestatesto = (event) => {
     setStateto(event);
     setStatetospan("");
-    let uniquecitiesto = data.filter((city) => city.subcountry === event);
+    let uniquecitiesto = Records.filter((city) => city.subcountry === event);
     uniquecitiesto = [...new Set(uniquecitiesto.map((city) => city.name))];
     uniquecitiesto.sort();
     setCitiesdatato(uniquecitiesto);
@@ -128,7 +120,6 @@ function Form() {
   };
 
   useEffect(() => {
-    getcoutrycitystate();
     if (bid) {
       setId(bid);
       Employeeservices.getEmployeebyid(bid)
@@ -364,12 +355,10 @@ function Form() {
   };
   const currencyConversion = () => {
     if (currency === "Indian Rupee") {
-      let req =
-        Number(flight) * 0.01225 +
-        Number(hotac) * 0.01225 +
-        Number(perdiem) * 0.01225 +
-        Number(othercost) * 0.01225;
-      setTotalcost(req);
+      let costtoConvert =
+        Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
+      let costinDollar = rupeetoDollar(costtoConvert);
+      setTotalcost(costinDollar);
     } else {
       let req =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
@@ -667,13 +656,32 @@ function Form() {
                   <select
                     class="form-select"
                     name="currencyselection"
+                    value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
                   >
-                    <option value="Indian Rupee">Indian Rupee</option>
-                    <option value="United States Dollar">
+                    <option>{currency}</option>
+                    <option value="Indian Rupee" key="Indian Rupee">
+                      Indian Rupee
+                    </option>
+                    <option
+                      value="United States Dollar"
+                      key="United States Dollar"
+                    >
                       United States Dollar
                     </option>
                   </select>
+                  {/* <select
+                    class="select"
+                    multiple
+                    data-mdb-placeholder="Example placeholder"
+                    multiple
+                  >
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    <option value="4">Four</option>
+                    <option value="5">Five</option>
+                  </select> */}
                 </div>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
@@ -770,7 +778,6 @@ function Form() {
                 variant="primary"
                 onClick={() => {
                   validation();
-                  // check();
                 }}
               >
                 Submit

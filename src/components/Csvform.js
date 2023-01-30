@@ -49,8 +49,6 @@ function Csvform() {
 
   const filterfunction = () => {
     setFilteredemployees("");
-    console.log(startdate);
-    console.log(enddate);
     Employeeservices.getfiltereddata(startdate, enddate)
       .then((success) => {
         console.log(success.data);
