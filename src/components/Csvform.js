@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Employeeservices from "../Services/Employeeservices";
 import { CSVLink } from "react-csv";
+import { useNavigate } from "react-router-dom";
 
-function Csvform({ setShowResults, setPassword, setEmail }) {
-  const [startdate, setStartdate] = useState("");
-  const [enddate, setEnddate] = useState("");
-  const [employees, setEmployees] = useState([]);
+function Csvform() {
+  const [startdate, setStartdate] = useState();
+  const [enddate, setEnddate] = useState();
   const [filteredemployees, setFilteredemployees] = useState([]);
-  const [exportshow, setExportshow] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [constemployeeall, setConstemployeeall] = useState([]);
+  const [startdateEmpall, setStartdateEmpall] = useState("");
+  const [enddateEmpall, setEnddateEmpall] = useState("");
+  const [dateValidationspan, setdateValidationspan] = useState("");
+  const [datespanforAllemployees, setdatespanforAllemployees] = useState("");
+  const navigate = useNavigate();
   const header = [
     { label: "Account", key: "Account" },
     { label: "Project/Contract", key: "Project/Contract" },
@@ -26,102 +32,212 @@ function Csvform({ setShowResults, setPassword, setEmail }) {
     { label: "Comments if Any", key: "Comments if Any" },
   ];
   const csvReport = {
-    filename: "Report.csv",
+    filename: "Filtered_Employess.csv",
     headers: header,
     data: employees,
   };
+  const Employeeall = {
+    filename: "Employees.csv",
+    headers: header,
+    data: constemployeeall,
+  };
   const filteredreport = {
-    filename: "Report.csv",
+    filename: "DatasforApproval.csv",
     headers: header,
     data: filteredemployees,
   };
 
-  const filterfunction = (e) => {
-    e.preventDefault();
+  const filterfunction = () => {
     setFilteredemployees("");
-    console.log(startdate);
-    console.log(enddate);
     Employeeservices.getfiltereddata(startdate, enddate)
       .then((success) => {
-        //console.log(success.data);
+        console.log(success.data);
         setFilteredemployees(success.data);
-        setExportshow(true);
       })
       .catch((error) => console.log(error));
   };
 
   useEffect(() => {
     Employeeservices.getEmployees()
-      .then((success) => setEmployees(success.data))
+      .then((success) => {
+        console.log(success.data);
+        setEmployees(success.data);
+        setConstemployeeall(success.data);
+      })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+  const redirect = () => {
+    navigate("/pmosection");
+  };
+  const dateValidation = () => {
+    if (enddate < startdate) {
+      setdateValidationspan("Please Provide a valid Date range");
+    } else {
+      setdateValidationspan("");
+      filterfunction();
+    }
+  };
+  useEffect(() => {
+    dateValidation();
+  }, [enddate]);
+
+  const employeeAllfilter = () => {
+    const filteredEmployeeall = constemployeeall.filter((emp) => {
+      if (
+        emp["Date from"] > startdateEmpall &&
+        emp["Date from"] < enddateEmpall
+      ) {
+        console.log("success");
+        return true;
+      } else {
+        console.log("condition not working");
+        return false;
+      }
+    });
+    setEmployees(filteredEmployeeall);
+  };
+  const dateValidationforAllemployees = () => {
+    if (enddateEmpall < startdateEmpall) {
+      setdatespanforAllemployees("Please Provide a valid Date range");
+    } else {
+      setdatespanforAllemployees("");
+      employeeAllfilter();
+    }
+  };
+  useEffect(() => {
+    dateValidationforAllemployees();
+  }, [enddateEmpall]);
   return (
-    <div className="mt-3">
-      <div className="row">
-        <div className="col-md-6 col-sm-12">
-          <h5>Choose Your Date and click on Set Date</h5>
-          <label style={{ width: "50%" }}>
-            Date from:
-            <input
-              type="date"
-              name="startdate"
-              value={startdate}
-              style={{ marginLeft: "5px" }}
-              onChange={(e) => setStartdate(e.target.value)}
-            />
-          </label>
-          <label style={{ width: "50%" }}>
-            Date To:
-            <input
-              type="date"
-              name="enddate"
-              value={enddate}
-              style={{ marginLeft: "5px" }}
-              onChange={(e) => {
-                setEnddate(e.target.value);
-                //filterfunction(e.target.value);
-              }}
-            />
-          </label>
-          <div style={{ display: "flex" }}>
-            <button
-              class="btn btn-primary mt-3 mb-2"
-              onClick={(e) => filterfunction(e)}
-            >
-              Set Date
-            </button>
-            <br></br>
-            {exportshow ? (
-              <CSVLink
-                {...filteredreport}
-                className="btn btn-success mt-3 mb-2"
-                style={{ marginLeft: "20px" }}
+    <div className="p-3" style={{ background: "rgb(240, 242, 245)" }}>
+      <div style={{ display: "flex", flexDirection: "row-reverse" }}>
+        <button
+          type="button"
+          class="btn btn-primary mt-3"
+          onClick={() => redirect()}
+        >
+          Log Out
+        </button>
+      </div>
+      <div class="row mt-3 mb-5">
+        <div class="col-md-6 col-sm-12 mt-3">
+          <div class="card bg-light">
+            <div class="card-header">
+              <h5>Records for Approval</h5>
+            </div>
+            <div class="card-body">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "50%",
+                }}
               >
-                Export
-              </CSVLink>
-            ) : null}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <label>From:</label>
+                  <input
+                    type="date"
+                    name="startdate"
+                    value={startdate}
+                    onChange={(e) => setStartdate(e.target.value)}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "2em",
+                  }}
+                >
+                  <label>To:</label>
+                  <input
+                    type="date"
+                    name="enddate"
+                    value={enddate}
+                    onChange={(e) => {
+                      setEnddate(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+              <span style={{ color: "red" }}>{dateValidationspan}</span>
+              <div>
+                <CSVLink {...filteredreport} className="btn btn-success mt-3">
+                  Download
+                </CSVLink>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="col-md-6 col-sm-12">
-          <h5>Click on Export All to download All records in csv format</h5>
-          <CSVLink {...csvReport} className="btn btn-success">
-            Export All
-          </CSVLink>
+        <div class="col-md-6 col-sm-12 mt-3">
+          <div class="card bg-light">
+            <div class="card-header">
+              <h5>All Records</h5>
+            </div>
+            <div class="card-body">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "50%",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <label>From:</label>
+                  <input
+                    type="date"
+                    name="startdateempall"
+                    value={startdateEmpall}
+                    onChange={(e) => setStartdateEmpall(e.target.value)}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "2em",
+                  }}
+                >
+                  <label>To:</label>
+                  <input
+                    type="date"
+                    name="enddateempall"
+                    value={enddateEmpall}
+                    onChange={(e) => {
+                      setEnddateEmpall(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+              <span style={{ color: "red" }}>
+                <p>{datespanforAllemployees}</p>
+              </span>
+              <div
+                className=" mt-3"
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <CSVLink {...csvReport} className="btn btn-success">
+                  Download
+                </CSVLink>
+                <CSVLink {...Employeeall} className="btn btn-success">
+                  Download All
+                </CSVLink>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <button
-        type="button"
-        class="btn btn-primary mt-3"
-        onClick={() => {
-          setShowResults(false);
-          setPassword("");
-          setEmail("");
-        }}
-      >
-        Log Out
-      </button>
     </div>
   );
 }

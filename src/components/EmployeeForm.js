@@ -4,11 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 import { useRecoilValue } from "recoil";
 import { bookingid } from "./Employee";
 import { useNavigate } from "react-router-dom";
+import { rupeetoDollar } from "./Currencyconversion";
+import { Dollartorupee } from "./Currencyconversion";
+import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
 import "./Form.css";
-
-function Form() {
+import Records from "./Records.json";
+function EmployeeForm() {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -30,7 +34,6 @@ function Form() {
   const [othercost, setOthercost] = useState("");
   const [totalcost, setTotalcost] = useState("");
   const [commentsifany, setcommentsifany] = useState("");
-
   const [countryfrom, setCountryfrom] = useState("");
   const [statefrom, setStatefrom] = useState("");
   const [cityfrom, setCityfrom] = useState("");
@@ -43,90 +46,73 @@ function Form() {
   const [countrytospan, setCountrytospan] = useState("");
   const [statetospan, setStatetospan] = useState("");
   const [citytospan, setCitytospan] = useState("");
-
+  const [currency, setCurrency] = useState("");
   const [empidspan, setempidspan] = useState("");
   const [emp, setEmp] = useState([]);
-
   const [purposeoftravelspan, setPurposeoftravelspan] = useState("");
-  const [traveltospan, setTraveltospan] = useState("");
   const [datefromspan, setDatefromspan] = useState("");
   const [datetospan, setDatetospan] = useState("");
   const [empidnav, setEmpidnav] = useState("");
   const navigate = useNavigate();
-
   const redirect = () => {
     navigate("/employeesection");
   };
   const [approved, setApproved] = useState("unapproved");
-  const [data, setData] = useState([]);
-
   const [statesdatafrom, setStatesdatafrom] = useState([]);
   const [citiesdatafrom, setCitiesdatafrom] = useState([]);
   const [statesdatato, setStatesdatato] = useState([]);
   const [citiesdatato, setCitiesdatato] = useState([]);
-  const getcoutrycitystate = () => {
-    Employeeservices.getCountrycitystate()
-      .then((success) => {
-        setData(success.data);
-        console.log(success.data);
-      })
-      .catch((error) => console.log(error));
-  };
+  const [currencySymbol, setCurrencySymbol] = useState("");
+  const [flightinDollar, setFlightinDollar] = useState("");
+  const [hotacinDollar, setHotacindollar] = useState("");
+  const [perdiuminDollar, setPerdiumindollar] = useState("");
+  const [othercostinDollar, setOthercostindollar] = useState("");
   // finding countries from the dataset.Set is used for unique values means same country will be repeated again and again.By using set repeatation can be avoided.
-  // ...is used to conver set back into array.Hence uniquecountries will be an array with unique country names.
-  const countries = [...new Set(data.map((item) => item.country))];
+  // ...is used to convert set back into array.Hence uniquecountries will be an array with unique country names.
+  const countries = [...new Set(Records.map((item) => item.country))];
   countries.sort();
 
-  const handlecountryfrom = (event) => {
-    setCountryfrom(event);
-    setCountryfromspan("");
-    let uniquestatesfrom = data.filter((state) => state.country === event);
+  const handlestatesfrom = () => {
+    let uniquestatesfrom = Records.filter(
+      (state) => state.country === countryfrom
+    );
     uniquestatesfrom = [
       ...new Set(uniquestatesfrom.map((state) => state.subcountry)),
     ];
     uniquestatesfrom.sort();
     setStatesdatafrom(uniquestatesfrom);
   };
-  const handlestatesfrom = (event) => {
-    setStatefrom(event);
-    setStatefromspan("");
-    let uniquecitiesfrom = data.filter((city) => city.subcountry === event);
+  const handlecitiesfrom = () => {
+    let uniquecitiesfrom = Records.filter(
+      (city) => city.subcountry === statefrom
+    );
     uniquecitiesfrom = [...new Set(uniquecitiesfrom.map((city) => city.name))];
     uniquecitiesfrom.sort();
     setCitiesdatafrom(uniquecitiesfrom);
   };
 
-  const handlecountryto = (event) => {
-    setCountryto(event);
-    setCountrytospan("");
-    let uniquestatesto = data.filter((state) => state.country === event);
+  const handlestatesto = () => {
+    let uniquestatesto = Records.filter((state) => state.country === countryto);
     uniquestatesto = [
       ...new Set(uniquestatesto.map((state) => state.subcountry)),
     ];
     uniquestatesto.sort();
     setStatesdatato(uniquestatesto);
   };
-  const handlestatesto = (event) => {
-    setStateto(event);
-    setStatetospan("");
-    let uniquecitiesto = data.filter((city) => city.subcountry === event);
+  const handlecitiesto = () => {
+    let uniquecitiesto = Records.filter((city) => city.subcountry === stateto);
     uniquecitiesto = [...new Set(uniquecitiesto.map((city) => city.name))];
     uniquecitiesto.sort();
     setCitiesdatato(uniquecitiesto);
   };
   const handletravelfrom = (city) => {
     setCityfrom(city);
-    console.log(city);
-    setCityfromspan("");
   };
   const handletravelto = (city) => {
-    console.log(city);
     setCityto(city);
-    setCitytospan("");
   };
 
   useEffect(() => {
-    getcoutrycitystate();
     if (bid) {
       setId(bid);
       Employeeservices.getEmployeebyid(bid)
@@ -145,13 +131,32 @@ function Form() {
           setCityto(success.data["Travel to"].split(",")[2]);
           setDatefrom(success.data["Date from"]);
           setDateto(success.data["Date To"]);
-          setFlight(success.data.Flight);
-          setHotac(success.data.Hotac);
-          setPerdium(success.data.Perdiem);
-          setOthercost(success.data["Other cost"]);
-          setTotalcost(success.data["Total Cost"]);
+          setFlight(success.data.Flight.slice(1, success.data.Flight.length));
+          setHotac(success.data.Hotac.slice(1, success.data.Hotac.length));
+          setPerdium(
+            success.data.Perdiem.slice(1, success.data.Perdiem.length)
+          );
+          setOthercost(
+            success.data["Other cost"].slice(
+              1,
+              success.data["Other cost"].length
+            )
+          );
+          // setOthercost(success.data["Other cost"]);
+          setTotalcost(
+            success.data["Total Cost"].slice(
+              1,
+              success.data["Total Cost"].length
+            )
+          );
           setcommentsifany(success.data["Comments if Any"]);
           setEmp(success.data);
+          setCurrency(success.data.Currency);
+          if (success.data.Currency === "Indian Rupee") {
+            setCurrencySymbol("₹");
+          } else {
+            setCurrencySymbol("$");
+          }
         })
         .catch((error) => console.log(error));
     } else {
@@ -159,14 +164,9 @@ function Form() {
     }
   }, []);
 
-  const findsum = () => {
-    let req =
-      Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
-    setTotalcost(req);
-  };
   const saveEmployee = (e) => {
     console.log(e);
-
+    console.log(totalcost);
     e.preventDefault();
     const employee = {
       id,
@@ -179,11 +179,12 @@ function Form() {
       travelto,
       datefrom,
       dateto,
-      flight,
-      hotac,
-      perdiem,
-      othercost,
+      flightinDollar,
+      hotacinDollar,
+      perdiuminDollar,
+      othercostinDollar,
       totalcost,
+      currency,
       commentsifany,
       approved,
     };
@@ -239,9 +240,9 @@ function Form() {
   };
   const title = () => {
     if (bid) {
-      return <h2 className="text-center">Employee Details Update Form</h2>;
+      return <h2 className="text-center">Request Update Form</h2>;
     } else {
-      return <h2 className="text-center">Employee Details add Form</h2>;
+      return <h2 className="text-center">Travel Request Form</h2>;
     }
   };
   const alertwindow = () => {
@@ -266,7 +267,6 @@ function Form() {
       Employeeservices.getEmployeebyempid(id)
         .then((success) => {
           if (typeof success.data == "string") {
-            setEmpidnav(success.data);
             setAccount("");
             setProject("");
             setEmpname("");
@@ -337,8 +337,12 @@ function Form() {
 
     datefrom === ""
       ? setDatefromspan("This field is Required")
+      : setDatefromspan("");
+    dateto === ""
+      ? setDatetospan("This field is Required")
+      : datefrom > dateto
+      ? setDatetospan("Please select a valid date range")
       : setDatetospan("");
-    dateto === "" ? setDatetospan("This field is Required") : setDatetospan("");
     if (
       empid !== "" &&
       purposeoftravel !== "" &&
@@ -349,14 +353,68 @@ function Form() {
       stateto !== "" &&
       cityto !== "" &&
       datefrom !== "" &&
-      dateto !== ""
+      dateto !== "" &&
+      datefrom < dateto
     ) {
       setTravelfrom(countryfrom.concat(",", statefrom).concat(",", cityfrom));
       setTravelto(countryto.concat(",", stateto).concat(",", cityto));
       handleShow();
     }
   };
-
+  useEffect(() => {
+    dateValidation();
+  }, [dateto]);
+  const dateValidation = () => {
+    if (datefrom > dateto) {
+      setDatetospan("Please choose a valid date range");
+    } else {
+      setDatetospan("");
+    }
+  };
+  const currencySymbolset = () => {
+    if (currency === "Indian Rupee") {
+      setCurrencySymbol("₹");
+      setHotac("");
+      setPerdium("");
+      setFlight("");
+      setOthercost("");
+      setTotalcost("");
+    } else {
+      setCurrencySymbol("$");
+      setHotac("");
+      setPerdium("");
+      setFlight("");
+      setOthercost("");
+      setTotalcost("");
+    }
+  };
+  useEffect(() => {
+    currencySymbolset();
+  }, [currency]);
+  const currencyConversion = () => {
+    if (currency === "Indian Rupee") {
+      let costtoConvert =
+        Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
+      let costinDollar = rupeetoDollar(costtoConvert);
+      setTotalcost("$" + costinDollar.toString());
+      // setHotacindollar(rupeetoDollar(Number(hotac)).toString());
+      setHotacindollar(currencySymbol + hotac);
+      setPerdiumindollar(currencySymbol + perdiem);
+      setFlightinDollar(currencySymbol + flight);
+      setOthercostindollar(currencySymbol + othercost);
+    } else {
+      let totalCostindollar =
+        Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
+      let roundedCost = (Math.round(totalCostindollar * 1000) / 1000).toFixed(
+        2
+      );
+      setTotalcost(currencySymbol + roundedCost.toString());
+      setHotacindollar(currencySymbol + hotac);
+      setPerdiumindollar(currencySymbol + perdiem);
+      setOthercostindollar(currencySymbol + othercost);
+      setFlightinDollar(currencySymbol + flight);
+    }
+  };
   return (
     <>
       <Modal show={show} onHide={handleClose}>
@@ -418,7 +476,6 @@ function Form() {
                   onChange={(e) => setAccount(e.target.value)}
                   class="form-control"
                   id="account"
-                  disabled
                 />
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
@@ -430,7 +487,6 @@ function Form() {
                   type="text"
                   class="form-control"
                   id="project"
-                  disabled
                 />
               </div>
               <div class="form-group  col-md-6 col-sm-12 mb-3">
@@ -441,7 +497,6 @@ function Form() {
                   type="text"
                   class="form-control"
                   id="empname"
-                  disabled
                 />
               </div>
             </div>
@@ -497,7 +552,6 @@ function Form() {
                     value={dateto}
                     onChange={(e) => {
                       setDateto(e.target.value);
-                      setDatetospan(" ");
                     }}
                     type="Date"
                     class="form-control"
@@ -512,11 +566,16 @@ function Form() {
                   <span style={{ color: "red", marginLeft: "5px" }}>*</span>
                 </span>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="countryfrom">Country:</label>
                   <select
+                    name="countryfrom"
                     values={countryfrom}
                     class="form-select"
                     onChange={(e) => {
-                      handlecountryfrom(e.target.value);
+                      setCountryfrom(e.target.value);
+                      setCountryfromspan("");
+                      setStatefrom("");
+                      setCityfrom("");
                     }}
                   >
                     <option>{countryfrom}</option>
@@ -529,12 +588,17 @@ function Form() {
                   <span style={{ color: "red" }}>{countryfromspan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="statefrom">State:</label>
                   <select
+                    name="statefrom"
                     value={statefrom}
                     class="form-select"
                     aria-label="Default select example"
+                    onClick={() => handlestatesfrom()}
                     onChange={(e) => {
-                      handlestatesfrom(e.target.value);
+                      setStatefrom(e.target.value);
+                      setStatefromspan("");
+                      setCityfrom("");
                     }}
                   >
                     <option selected>{statefrom}</option>
@@ -547,11 +611,15 @@ function Form() {
                   <span style={{ color: "red" }}>{statefromspan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="cityfrom">City:</label>
                   <select
+                    name="cityfrom"
                     class="form-select"
                     value={cityfrom}
                     aria-label="Default select example"
+                    onClick={() => handlecitiesfrom()}
                     onChange={(e) => {
+                      setCityfromspan("");
                       handletravelfrom(e.target.value);
                     }}
                   >
@@ -571,11 +639,16 @@ function Form() {
                   <span style={{ color: "red", marginLeft: "5px" }}>*</span>
                 </span>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="countryto">Country:</label>
                   <select
+                    name="countryto"
                     class="form-select"
                     value={countryto}
                     onChange={(e) => {
-                      handlecountryto(e.target.value);
+                      setCountryto(e.target.value);
+                      setCountrytospan("");
+                      setStateto("");
+                      setCityto("");
                     }}
                   >
                     <option>{countryto}</option>
@@ -588,12 +661,19 @@ function Form() {
                   <span style={{ color: "red" }}>{countrytospan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="stateto">State:</label>
                   <select
+                    name="stateto"
                     value={stateto}
                     class="form-select"
                     aria-label="Default select example"
+                    onClick={() => {
+                      handlestatesto();
+                    }}
                     onChange={(e) => {
-                      handlestatesto(e.target.value);
+                      setStateto(e.target.value);
+                      setStatetospan("");
+                      setCityto("");
                     }}
                   >
                     <option>{stateto}</option>
@@ -606,11 +686,17 @@ function Form() {
                   <span style={{ color: "red" }}>{statetospan}</span>
                 </div>
                 <div class="form-group mb-3 col-md-4 col-sm-12">
+                  <label for="cityto">City:</label>
                   <select
+                    name="cityto"
                     value={cityto}
                     class="form-select"
                     aria-label="Default select example"
+                    onClick={() => {
+                      handlecitiesto();
+                    }}
                     onChange={(e) => {
+                      setCitytospan("");
                       handletravelto(e.target.value);
                     }}
                   >
@@ -634,74 +720,97 @@ function Form() {
               <span style={{ fontSize: "2rem" }}>Cost Estimation</span>
             </header>
             <div className="row section p-2 mb-3">
+              <div className="row">
+                <div class="form-group mb-3 col-md-3 col-sm-12">
+                  <label for="currencyselection">Choose your currency:</label>
+                  <Form.Select onChange={(e) => setCurrency(e.target.value)}>
+                    <option>{currency}</option>
+                    <option value="Indian Rupee" key="Indian Rupee">
+                      Indian Rupee
+                    </option>
+                    <option
+                      value="United States Dollar"
+                      key="United States Dollar"
+                    >
+                      United States Dollar
+                    </option>
+                  </Form.Select>
+                </div>
+              </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
-                <label for="flightcost">Flight Cost</label>
+                <Form.Label htmlFor="flightcost">Flight Cost</Form.Label>
 
-                <input
-                  value={flight}
-                  onChange={(e) => setFlight(e.target.value)}
-                  onKeyUp={() => findsum()}
-                  type="number"
-                  class="form-control"
-                  id="flight"
-                  placeholder="Flight Cost"
-                />
+                <InputGroup>
+                  <InputGroup.Text>{currencySymbol}</InputGroup.Text>
+                  <Form.Control
+                    value={flight}
+                    onChange={(e) => setFlight(e.target.value)}
+                    onKeyUp={() => currencyConversion()}
+                    class="form-control"
+                    id="flightcost"
+                    placeholder="Flight Cost"
+                  />
+                </InputGroup>
               </div>
               <div class="form-group col-md-6 col-sm-12">
-                <label for="Hotaccost">Hotac Cost</label>
-
-                <input
-                  value={hotac}
-                  onChange={(e) => setHotac(e.target.value)}
-                  onKeyUp={() => findsum()}
-                  type="number"
-                  class="form-control"
-                  id="hotac"
-                  placeholder="Hotac cost"
-                />
+                <Form.Label htmlFor="hotaccost">Hotac Cost</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>{currencySymbol}</InputGroup.Text>
+                  <Form.Control
+                    value={hotac}
+                    onChange={(e) => setHotac(e.target.value)}
+                    onKeyUp={() => currencyConversion()}
+                    class="form-control"
+                    id="hotaccost"
+                    placeholder="Hotac cost"
+                  />
+                </InputGroup>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
-                <label for="perdiumcost">Perdium Cost</label>
-
-                <input
-                  value={perdiem}
-                  onChange={(e) => setPerdium(e.target.value)}
-                  onKeyUp={() => findsum()}
-                  type="number"
-                  class="form-control"
-                  id="perdium"
-                  placeholder="Perdium cost"
-                />
+                <Form.Label htmlFor="perdiumcost">Perdium Cost</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>{currencySymbol}</InputGroup.Text>
+                  <Form.Control
+                    value={perdiem}
+                    onChange={(e) => setPerdium(e.target.value)}
+                    onKeyUp={() => currencyConversion()}
+                    class="form-control"
+                    id="perdiumcost"
+                    placeholder="Perdium cost"
+                  />
+                </InputGroup>
               </div>
               <div class="form-group  col-md-6 col-sm-12">
-                <label for="othercost">Other cost</label>
-
-                <input
-                  value={othercost}
-                  onChange={(e) => setOthercost(e.target.value)}
-                  onKeyUp={() => findsum()}
-                  type="number"
-                  class="form-control"
-                  id="othercost"
-                  placeholder="Other cost"
-                />
+                <Form.Label htmlFor="othercost">Other Cost</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>{currencySymbol}</InputGroup.Text>
+                  <Form.Control
+                    value={othercost}
+                    onChange={(e) => setOthercost(e.target.value)}
+                    onKeyUp={() => currencyConversion()}
+                    class="form-control"
+                    id="othercost"
+                    placeholder="Other cost"
+                  />
+                </InputGroup>
               </div>
               <div class="form-group  mb-3 col-md-3 col-sm-12">
-                <label for="totalcost">Total Cost</label>
-
-                <input
-                  type="number"
-                  class="form-control"
-                  id="totalcost"
-                  value={totalcost}
-                  disabled
-                />
+                <Form.Label htmlFor="totalcost">Total Cost</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>{"$"}</InputGroup.Text>
+                  <Form.Control
+                    class="form-control"
+                    id="totalcost"
+                    value={totalcost}
+                    disabled
+                  />
+                </InputGroup>
               </div>
             </div>
           </div>
 
           {/* ***************************************
-          Cost Section End
+            Cost Section End
           ************************ */}
           <div class="form-group row">
             <div class="col-md-4 col-sm-10">
@@ -726,7 +835,6 @@ function Form() {
                 variant="primary"
                 onClick={() => {
                   validation();
-                  // check();
                 }}
               >
                 Submit
@@ -746,4 +854,4 @@ function Form() {
   );
 }
 
-export default Form;
+export default EmployeeForm;
