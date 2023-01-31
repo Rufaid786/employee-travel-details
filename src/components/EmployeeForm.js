@@ -5,12 +5,14 @@ import { useRecoilValue } from "recoil";
 import { bookingid } from "./Employee";
 import { useNavigate } from "react-router-dom";
 import { rupeetoDollar } from "./Currencyconversion";
+import { Dollartorupee } from "./Currencyconversion";
+import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-// import { Form } from "react-bootstrap";
+import Form from "react-bootstrap/Form";
 import "./Form.css";
 import Records from "./Records.json";
-function Form() {
+function EmployeeForm() {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -45,27 +47,26 @@ function Form() {
   const [statetospan, setStatetospan] = useState("");
   const [citytospan, setCitytospan] = useState("");
   const [currency, setCurrency] = useState("");
-
   const [empidspan, setempidspan] = useState("");
   const [emp, setEmp] = useState([]);
-
   const [purposeoftravelspan, setPurposeoftravelspan] = useState("");
-
   const [datefromspan, setDatefromspan] = useState("");
   const [datetospan, setDatetospan] = useState("");
   const [empidnav, setEmpidnav] = useState("");
   const navigate = useNavigate();
-
   const redirect = () => {
     navigate("/employeesection");
   };
   const [approved, setApproved] = useState("unapproved");
-
   const [statesdatafrom, setStatesdatafrom] = useState([]);
   const [citiesdatafrom, setCitiesdatafrom] = useState([]);
   const [statesdatato, setStatesdatato] = useState([]);
   const [citiesdatato, setCitiesdatato] = useState([]);
-
+  const [currencySymbol, setCurrencySymbol] = useState("");
+  const [flightinDollar, setFlightinDollar] = useState("");
+  const [hotacinDollar, setHotacindollar] = useState("");
+  const [perdiuminDollar, setPerdiumindollar] = useState("");
+  const [othercostinDollar, setOthercostindollar] = useState("");
   // finding countries from the dataset.Set is used for unique values means same country will be repeated again and again.By using set repeatation can be avoided.
   // ...is used to convert set back into array.Hence uniquecountries will be an array with unique country names.
   const countries = [...new Set(Records.map((item) => item.country))];
@@ -154,7 +155,7 @@ function Form() {
 
   const saveEmployee = (e) => {
     console.log(e);
-
+    console.log(totalcost);
     e.preventDefault();
     const employee = {
       id,
@@ -353,16 +354,47 @@ function Form() {
       setDatetospan("");
     }
   };
+  const currencySymbolset = () => {
+    if (currency === "Indian Rupee") {
+      setCurrencySymbol("₹");
+      setHotac("");
+      setPerdium("");
+      setFlight("");
+      setOthercost("");
+      setTotalcost("");
+    } else {
+      setCurrencySymbol("$");
+      setHotac("");
+      setPerdium("");
+      setFlight("");
+      setOthercost("");
+      setTotalcost("");
+    }
+  };
+  useEffect(() => {
+    currencySymbolset();
+  }, [currency]);
   const currencyConversion = () => {
     if (currency === "Indian Rupee") {
       let costtoConvert =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
       let costinDollar = rupeetoDollar(costtoConvert);
-      setTotalcost(costinDollar);
+      setTotalcost(costinDollar.toString());
+      setHotacindollar(rupeetoDollar(Number(hotac)).toString());
+      setPerdiumindollar(rupeetoDollar(Number(perdiem)).toString());
+      setFlightinDollar(rupeetoDollar(Number(flight)).toString());
+      setOthercostindollar(rupeetoDollar(Number(othercost)).toString());
     } else {
-      let req =
+      let totalCostindollar =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
-      setTotalcost(req);
+      let roundedCost = (Math.round(totalCostindollar * 1000) / 1000).toFixed(
+        2
+      );
+      setTotalcost(roundedCost.toString());
+      setHotacindollar(hotac);
+      setPerdiumindollar(perdiem);
+      setOthercostindollar(othercost);
+      setFlightinDollar(flight);
     }
   };
   return (
@@ -653,12 +685,7 @@ function Form() {
               <div className="row">
                 <div class="form-group mb-3 col-md-3 col-sm-12">
                   <label for="currencyselection">Choose your currency:</label>
-                  <select
-                    class="form-select"
-                    name="currencyselection"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                  >
+                  <Form.Select onChange={(e) => setCurrency(e.target.value)}>
                     <option>{currency}</option>
                     <option value="Indian Rupee" key="Indian Rupee">
                       Indian Rupee
@@ -669,85 +696,77 @@ function Form() {
                     >
                       United States Dollar
                     </option>
-                  </select>
-                  {/* <select
-                    class="select"
-                    multiple
-                    data-mdb-placeholder="Example placeholder"
-                    multiple
-                  >
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                    <option value="4">Four</option>
-                    <option value="5">Five</option>
-                  </select> */}
+                  </Form.Select>
                 </div>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
-                <label for="flightcost">Flight Cost</label>
-                <div>
-                  <input
+                <Form.Label htmlFor="flightcost">Flight Cost</Form.Label>
+
+                <InputGroup>
+                  <InputGroup.Text>{currencySymbol}</InputGroup.Text>
+                  <Form.Control
                     value={flight}
                     onChange={(e) => setFlight(e.target.value)}
                     onKeyUp={() => currencyConversion()}
-                    type="number"
                     class="form-control"
-                    id="flight"
+                    id="flightcost"
                     placeholder="Flight Cost"
                   />
-                </div>
+                </InputGroup>
               </div>
               <div class="form-group col-md-6 col-sm-12">
-                <label for="Hotaccost">Hotac Cost</label>
-                <div>
-                  <input
+                <Form.Label htmlFor="hotaccost">Hotac Cost</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>{currencySymbol}</InputGroup.Text>
+                  <Form.Control
                     value={hotac}
                     onChange={(e) => setHotac(e.target.value)}
                     onKeyUp={() => currencyConversion()}
-                    type="number"
                     class="form-control"
-                    id="hotac"
+                    id="hotaccost"
                     placeholder="Hotac cost"
                   />
-                </div>
+                </InputGroup>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
-                <label for="perdiumcost">Perdium Cost</label>
-
-                <input
-                  value={perdiem}
-                  onChange={(e) => setPerdium(e.target.value)}
-                  onKeyUp={() => currencyConversion()}
-                  type="number"
-                  class="form-control"
-                  id="perdium"
-                  placeholder="Perdium cost"
-                />
+                <Form.Label htmlFor="perdiumcost">Perdium Cost</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>{currencySymbol}</InputGroup.Text>
+                  <Form.Control
+                    value={perdiem}
+                    onChange={(e) => setPerdium(e.target.value)}
+                    onKeyUp={() => currencyConversion()}
+                    class="form-control"
+                    id="perdiumcost"
+                    placeholder="Perdium cost"
+                  />
+                </InputGroup>
               </div>
               <div class="form-group  col-md-6 col-sm-12">
-                <label for="othercost">Other cost</label>
-
-                <input
-                  value={othercost}
-                  onChange={(e) => setOthercost(e.target.value)}
-                  onKeyUp={() => currencyConversion()}
-                  type="number"
-                  class="form-control"
-                  id="othercost"
-                  placeholder="Other cost"
-                />
+                <Form.Label htmlFor="othercost">Other Cost</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>{currencySymbol}</InputGroup.Text>
+                  <Form.Control
+                    value={othercost}
+                    onChange={(e) => setOthercost(e.target.value)}
+                    onKeyUp={() => currencyConversion()}
+                    class="form-control"
+                    id="othercost"
+                    placeholder="Other cost"
+                  />
+                </InputGroup>
               </div>
               <div class="form-group  mb-3 col-md-3 col-sm-12">
-                <label for="totalcost">Total Cost</label>
-
-                <input
-                  type="number"
-                  class="form-control"
-                  id="totalcost"
-                  value={totalcost}
-                  disabled
-                />
+                <Form.Label htmlFor="totalcost">Total Cost</Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>{"$"}</InputGroup.Text>
+                  <Form.Control
+                    class="form-control"
+                    id="totalcost"
+                    value={totalcost}
+                    disabled
+                  />
+                </InputGroup>
               </div>
             </div>
           </div>
@@ -797,4 +816,4 @@ function Form() {
   );
 }
 
-export default Form;
+export default EmployeeForm;
