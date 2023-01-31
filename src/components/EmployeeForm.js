@@ -139,13 +139,23 @@ function EmployeeForm() {
           setCityto(success.data["Travel to"].split(",")[2]);
           setDatefrom(success.data["Date from"]);
           setDateto(success.data["Date To"]);
-          setFlight(success.data.Flight);
-          setHotac(success.data.Hotac);
-          setPerdium(success.data.Perdiem);
-          setOthercost(success.data["Other cost"]);
           setTotalcost(success.data["Total Cost"]);
           setcommentsifany(success.data["Comments if Any"]);
           setEmp(success.data);
+          setCurrency(success.data.Currency);
+          if (success.data.Currency === "Indian Rupee") {
+            setCurrencySymbol("₹");
+            setFlight(success.data.Flight.split("₹")[1]);
+            setHotac(success.data.Hotac.split("₹")[1]);
+            setPerdium(success.data.Perdiem.split("₹")[1]);
+            setOthercost(success.data["Other cost"].split("₹")[1]);
+          } else {
+            setCurrencySymbol("$");
+            setFlight(success.data.Flight.split("$")[1]);
+            setHotac(success.data.Hotac.split("$")[1]);
+            setPerdium(success.data.Perdiem.split("$")[1]);
+            setOthercost(success.data["Other cost"].split("$")[1]);
+          }
         })
         .catch((error) => console.log(error));
     } else {
@@ -168,11 +178,12 @@ function EmployeeForm() {
       travelto,
       datefrom,
       dateto,
-      flight,
-      hotac,
-      perdiem,
-      othercost,
+      flightinDollar,
+      hotacinDollar,
+      perdiuminDollar,
+      othercostinDollar,
       totalcost,
+      currency,
       commentsifany,
       approved,
     };
@@ -325,8 +336,12 @@ function EmployeeForm() {
 
     datefrom === ""
       ? setDatefromspan("This field is Required")
+      : setDatefromspan("");
+    dateto === ""
+      ? setDatetospan("This field is Required")
+      : datefrom > dateto
+      ? setDatetospan("Please select a valid date range")
       : setDatetospan("");
-    dateto === "" ? setDatetospan("This field is Required") : setDatetospan("");
     if (
       empid !== "" &&
       purposeoftravel !== "" &&
@@ -337,7 +352,8 @@ function EmployeeForm() {
       stateto !== "" &&
       cityto !== "" &&
       datefrom !== "" &&
-      dateto !== ""
+      dateto !== "" &&
+      datefrom < dateto
     ) {
       setTravelfrom(countryfrom.concat(",", statefrom).concat(",", cityfrom));
       setTravelto(countryto.concat(",", stateto).concat(",", cityto));
@@ -379,22 +395,23 @@ function EmployeeForm() {
       let costtoConvert =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
       let costinDollar = rupeetoDollar(costtoConvert);
-      setTotalcost(costinDollar.toString());
-      setHotacindollar(rupeetoDollar(Number(hotac)).toString());
-      setPerdiumindollar(rupeetoDollar(Number(perdiem)).toString());
-      setFlightinDollar(rupeetoDollar(Number(flight)).toString());
-      setOthercostindollar(rupeetoDollar(Number(othercost)).toString());
+      setTotalcost("$" + costinDollar.toString());
+      // setHotacindollar(rupeetoDollar(Number(hotac)).toString());
+      setHotacindollar(currencySymbol + hotac);
+      setPerdiumindollar(currencySymbol + perdiem);
+      setFlightinDollar(currencySymbol + flight);
+      setOthercostindollar(currencySymbol + othercost);
     } else {
       let totalCostindollar =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
       let roundedCost = (Math.round(totalCostindollar * 1000) / 1000).toFixed(
         2
       );
-      setTotalcost(roundedCost.toString());
-      setHotacindollar(hotac);
-      setPerdiumindollar(perdiem);
-      setOthercostindollar(othercost);
-      setFlightinDollar(flight);
+      setTotalcost(currencySymbol + roundedCost.toString());
+      setHotacindollar(currencySymbol + hotac);
+      setPerdiumindollar(currencySymbol + perdiem);
+      setOthercostindollar(currencySymbol + othercost);
+      setFlightinDollar(currencySymbol + flight);
     }
   };
   return (
