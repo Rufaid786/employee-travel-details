@@ -72,52 +72,44 @@ function EmployeeForm() {
   const countries = [...new Set(Records.map((item) => item.country))];
   countries.sort();
 
-  const handlecountryfrom = (event) => {
-    setCountryfrom(event);
-    setCountryfromspan("");
-    let uniquestatesfrom = Records.filter((state) => state.country === event);
+  const handlestatesfrom = () => {
+    let uniquestatesfrom = Records.filter(
+      (state) => state.country === countryfrom
+    );
     uniquestatesfrom = [
       ...new Set(uniquestatesfrom.map((state) => state.subcountry)),
     ];
     uniquestatesfrom.sort();
     setStatesdatafrom(uniquestatesfrom);
   };
-  const handlestatesfrom = (event) => {
-    setStatefrom(event);
-    setStatefromspan("");
-    let uniquecitiesfrom = Records.filter((city) => city.subcountry === event);
+  const handlecitiesfrom = () => {
+    let uniquecitiesfrom = Records.filter(
+      (city) => city.subcountry === statefrom
+    );
     uniquecitiesfrom = [...new Set(uniquecitiesfrom.map((city) => city.name))];
     uniquecitiesfrom.sort();
     setCitiesdatafrom(uniquecitiesfrom);
   };
 
-  const handlecountryto = (event) => {
-    setCountryto(event);
-    setCountrytospan("");
-    let uniquestatesto = Records.filter((state) => state.country === event);
+  const handlestatesto = () => {
+    let uniquestatesto = Records.filter((state) => state.country === countryto);
     uniquestatesto = [
       ...new Set(uniquestatesto.map((state) => state.subcountry)),
     ];
     uniquestatesto.sort();
     setStatesdatato(uniquestatesto);
   };
-  const handlestatesto = (event) => {
-    setStateto(event);
-    setStatetospan("");
-    let uniquecitiesto = Records.filter((city) => city.subcountry === event);
+  const handlecitiesto = () => {
+    let uniquecitiesto = Records.filter((city) => city.subcountry === stateto);
     uniquecitiesto = [...new Set(uniquecitiesto.map((city) => city.name))];
     uniquecitiesto.sort();
     setCitiesdatato(uniquecitiesto);
   };
   const handletravelfrom = (city) => {
     setCityfrom(city);
-    console.log(city);
-    setCityfromspan("");
   };
   const handletravelto = (city) => {
-    console.log(city);
     setCityto(city);
-    setCitytospan("");
   };
 
   useEffect(() => {
@@ -139,22 +131,31 @@ function EmployeeForm() {
           setCityto(success.data["Travel to"].split(",")[2]);
           setDatefrom(success.data["Date from"]);
           setDateto(success.data["Date To"]);
-          setTotalcost(success.data["Total Cost"]);
+          setFlight(success.data.Flight.slice(1, success.data.Flight.length));
+          setHotac(success.data.Hotac.slice(1, success.data.Hotac.length));
+          setPerdium(
+            success.data.Perdiem.slice(1, success.data.Perdiem.length)
+          );
+          setOthercost(
+            success.data["Other cost"].slice(
+              1,
+              success.data["Other cost"].length
+            )
+          );
+          // setOthercost(success.data["Other cost"]);
+          setTotalcost(
+            success.data["Total Cost"].slice(
+              1,
+              success.data["Total Cost"].length
+            )
+          );
           setcommentsifany(success.data["Comments if Any"]);
           setEmp(success.data);
           setCurrency(success.data.Currency);
           if (success.data.Currency === "Indian Rupee") {
             setCurrencySymbol("₹");
-            setFlight(success.data.Flight.split("₹")[1]);
-            setHotac(success.data.Hotac.split("₹")[1]);
-            setPerdium(success.data.Perdiem.split("₹")[1]);
-            setOthercost(success.data["Other cost"].split("₹")[1]);
           } else {
             setCurrencySymbol("$");
-            setFlight(success.data.Flight.split("$")[1]);
-            setHotac(success.data.Hotac.split("$")[1]);
-            setPerdium(success.data.Perdiem.split("$")[1]);
-            setOthercost(success.data["Other cost"].split("$")[1]);
           }
         })
         .catch((error) => console.log(error));
@@ -571,7 +572,10 @@ function EmployeeForm() {
                     values={countryfrom}
                     class="form-select"
                     onChange={(e) => {
-                      handlecountryfrom(e.target.value);
+                      setCountryfrom(e.target.value);
+                      setCountryfromspan("");
+                      setStatefrom("");
+                      setCityfrom("");
                     }}
                   >
                     <option>{countryfrom}</option>
@@ -590,8 +594,11 @@ function EmployeeForm() {
                     value={statefrom}
                     class="form-select"
                     aria-label="Default select example"
+                    onClick={() => handlestatesfrom()}
                     onChange={(e) => {
-                      handlestatesfrom(e.target.value);
+                      setStatefrom(e.target.value);
+                      setStatefromspan("");
+                      setCityfrom("");
                     }}
                   >
                     <option selected>{statefrom}</option>
@@ -610,7 +617,9 @@ function EmployeeForm() {
                     class="form-select"
                     value={cityfrom}
                     aria-label="Default select example"
+                    onClick={() => handlecitiesfrom()}
                     onChange={(e) => {
+                      setCityfromspan("");
                       handletravelfrom(e.target.value);
                     }}
                   >
@@ -636,7 +645,10 @@ function EmployeeForm() {
                     class="form-select"
                     value={countryto}
                     onChange={(e) => {
-                      handlecountryto(e.target.value);
+                      setCountryto(e.target.value);
+                      setCountrytospan("");
+                      setStateto("");
+                      setCityto("");
                     }}
                   >
                     <option>{countryto}</option>
@@ -655,8 +667,13 @@ function EmployeeForm() {
                     value={stateto}
                     class="form-select"
                     aria-label="Default select example"
+                    onClick={() => {
+                      handlestatesto();
+                    }}
                     onChange={(e) => {
-                      handlestatesto(e.target.value);
+                      setStateto(e.target.value);
+                      setStatetospan("");
+                      setCityto("");
                     }}
                   >
                     <option>{stateto}</option>
@@ -675,7 +692,11 @@ function EmployeeForm() {
                     value={cityto}
                     class="form-select"
                     aria-label="Default select example"
+                    onClick={() => {
+                      handlecitiesto();
+                    }}
                     onChange={(e) => {
+                      setCitytospan("");
                       handletravelto(e.target.value);
                     }}
                   >
