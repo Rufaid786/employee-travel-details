@@ -124,7 +124,7 @@ function Csvform() {
         <div class="col-md-6 col-sm-12 mt-3">
           <div class="card bg-light">
             <div class="card-header">
-              <h5>Records for Approval</h5>
+              <h5>Records for approval</h5>
             </div>
             <div class="card-body">
               <div
@@ -178,7 +178,7 @@ function Csvform() {
         <div class="col-md-6 col-sm-12 mt-3">
           <div class="card bg-light">
             <div class="card-header">
-              <h5>All Records</h5>
+              <h5>Records in the Table</h5>
             </div>
             <div class="card-body">
               <div
@@ -231,7 +231,7 @@ function Csvform() {
                   Download
                 </CSVLink>
                 <CSVLink {...Employeeall} className="btn btn-success">
-                  Download All
+                  Download All Records
                 </CSVLink>
               </div>
             </div>
