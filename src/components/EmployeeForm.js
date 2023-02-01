@@ -67,6 +67,7 @@ function EmployeeForm() {
   const [hotacinDollar, setHotacindollar] = useState("");
   const [perdiuminDollar, setPerdiumindollar] = useState("");
   const [othercostinDollar, setOthercostindollar] = useState("");
+  const [totalCostindollar, setTotalcostindollar] = useState("");
   // finding countries from the dataset.Set is used for unique values means same country will be repeated again and again.By using set repeatation can be avoided.
   // ...is used to convert set back into array.Hence uniquecountries will be an array with unique country names.
   const countries = [...new Set(Records.map((item) => item.country))];
@@ -142,7 +143,7 @@ function EmployeeForm() {
               success.data["Other cost"].length
             )
           );
-          // setOthercost(success.data["Other cost"]);
+
           setTotalcost(
             success.data["Total Cost"].slice(
               1,
@@ -183,7 +184,7 @@ function EmployeeForm() {
       hotacinDollar,
       perdiuminDollar,
       othercostinDollar,
-      totalcost,
+      totalCostindollar,
       currency,
       commentsifany,
       approved,
@@ -214,7 +215,7 @@ function EmployeeForm() {
     setOthercost("");
     setTotalcost("");
     setcommentsifany("");
-    //window.location.reload();
+
     redirect();
   };
   const reset = () => {
@@ -391,12 +392,17 @@ function EmployeeForm() {
   useEffect(() => {
     currencySymbolset();
   }, [currency]);
+  useEffect(() => {
+    currencyConversion();
+  }, [flight, hotac, perdiem, othercost, totalcost]);
   const currencyConversion = () => {
     if (currency === "Indian Rupee") {
       let costtoConvert =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
       let costinDollar = rupeetoDollar(costtoConvert);
-      setTotalcost("$" + costinDollar.toString());
+      // cost in dollar error
+      setTotalcost(costinDollar.toString());
+      setTotalcostindollar("$" + totalcost);
       // setHotacindollar(rupeetoDollar(Number(hotac)).toString());
       setHotacindollar(currencySymbol + hotac);
       setPerdiumindollar(currencySymbol + perdiem);
@@ -408,7 +414,8 @@ function EmployeeForm() {
       let roundedCost = (Math.round(totalCostindollar * 1000) / 1000).toFixed(
         2
       );
-      setTotalcost(currencySymbol + roundedCost.toString());
+      setTotalcost(roundedCost.toString());
+      setTotalcostindollar("$" + totalcost);
       setHotacindollar(currencySymbol + hotac);
       setPerdiumindollar(currencySymbol + perdiem);
       setOthercostindollar(currencySymbol + othercost);
@@ -745,7 +752,6 @@ function EmployeeForm() {
                   <Form.Control
                     value={flight}
                     onChange={(e) => setFlight(e.target.value)}
-                    onKeyUp={() => currencyConversion()}
                     class="form-control"
                     id="flightcost"
                     placeholder="Flight Cost"
@@ -759,7 +765,6 @@ function EmployeeForm() {
                   <Form.Control
                     value={hotac}
                     onChange={(e) => setHotac(e.target.value)}
-                    onKeyUp={() => currencyConversion()}
                     class="form-control"
                     id="hotaccost"
                     placeholder="Hotac cost"
@@ -773,7 +778,6 @@ function EmployeeForm() {
                   <Form.Control
                     value={perdiem}
                     onChange={(e) => setPerdium(e.target.value)}
-                    onKeyUp={() => currencyConversion()}
                     class="form-control"
                     id="perdiumcost"
                     placeholder="Perdium cost"
@@ -787,7 +791,6 @@ function EmployeeForm() {
                   <Form.Control
                     value={othercost}
                     onChange={(e) => setOthercost(e.target.value)}
-                    onKeyUp={() => currencyConversion()}
                     class="form-control"
                     id="othercost"
                     placeholder="Other cost"
