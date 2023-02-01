@@ -40,6 +40,9 @@ function EmployeeForm() {
   const [countryto, setCountryto] = useState("");
   const [stateto, setStateto] = useState("");
   const [cityto, setCityto] = useState("");
+  const [accountspan, setAccountspan] = useState("");
+  const [projectspan, setProjectspan] = useState("");
+  const [empnamespan, setEmpnamespan] = useState("");
   const [countryfromspan, setCountryfromspan] = useState("");
   const [statefromspan, setStatefromspan] = useState("");
   const [cityfromspan, setCityfromspan] = useState("");
@@ -206,7 +209,6 @@ function EmployeeForm() {
     setCountryto("");
     setStateto("");
     setCityto("");
-
     setDatefrom("");
     setDateto("");
     setFlight("");
@@ -276,6 +278,9 @@ function EmployeeForm() {
             setProject(success.data["Project/Contract"]);
             setEmpname(success.data["Emp Name"]);
             setEmpidnav("");
+            setAccountspan("");
+            setProjectspan("");
+            setEmpnamespan("");
           }
         })
         .catch((error) => {
@@ -288,6 +293,15 @@ function EmployeeForm() {
   const keyupvalidation = () => {
     if (purposeoftravel) {
       setPurposeoftravelspan("");
+    }
+    if (account) {
+      setAccountspan("");
+    }
+    if (project) {
+      setProjectspan("");
+    }
+    if (empname) {
+      setEmpnamespan("");
     }
     if (datefrom) {
       setDatefromspan("");
@@ -316,6 +330,15 @@ function EmployeeForm() {
   };
   const validation = () => {
     empid === "" ? setempidspan("This field is Required") : setempidspan("");
+    account === ""
+      ? setAccountspan("This field is Required")
+      : setAccountspan("");
+    project === ""
+      ? setProjectspan("This field is Required")
+      : setProjectspan("");
+    empname === ""
+      ? setEmpnamespan("This field is Required")
+      : setEmpnamespan("");
     purposeoftravel === ""
       ? setPurposeoftravelspan("This field is Required")
       : setPurposeoftravelspan("");
@@ -346,6 +369,9 @@ function EmployeeForm() {
       : setDatetospan("");
     if (
       empid !== "" &&
+      account !== "" &&
+      project !== "" &&
+      empname !== "" &&
       purposeoftravel !== "" &&
       countryfrom !== "" &&
       statefrom !== "" &&
@@ -475,7 +501,10 @@ function EmployeeForm() {
                 <span style={{ color: "red" }}>{empidspan}</span>
               </div>
               <div class="form-group col-md-6 col-sm-12">
-                <label for="inputPassword">Account</label>
+                <label for="inputPassword">
+                  Account
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </label>
 
                 <input
                   type="text"
@@ -483,28 +512,39 @@ function EmployeeForm() {
                   onChange={(e) => setAccount(e.target.value)}
                   class="form-control"
                   id="account"
+                  onKeyUp={() => keyupvalidation()}
                 />
+                <span style={{ color: "red" }}>{accountspan}</span>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
-                <label for="inputPassword">Project/Contract</label>
-
+                <label for="inputPassword">
+                  Project/Contract
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </label>
                 <input
                   value={project}
                   onChange={(e) => setProject(e.target.value)}
                   type="text"
                   class="form-control"
                   id="project"
+                  onKeyUp={() => keyupvalidation()}
                 />
+                <span style={{ color: "red" }}>{projectspan}</span>
               </div>
               <div class="form-group  col-md-6 col-sm-12 mb-3">
-                <label for="empname">Emp Name</label>
+                <label for="empname">
+                  Emp Name
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </label>
                 <input
                   value={empname}
                   onChange={(e) => setEmpname(e.target.value)}
                   type="text"
                   class="form-control"
                   id="empname"
+                  onKeyUp={() => keyupvalidation()}
                 />
+                <span style={{ color: "red" }}>{empnamespan}</span>
               </div>
             </div>
           </div>
