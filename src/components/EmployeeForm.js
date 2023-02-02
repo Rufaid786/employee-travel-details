@@ -121,7 +121,6 @@ function EmployeeForm() {
       setId(bid);
       Employeeservices.getEmployeebyid(bid)
         .then((success) => {
-          console.log(success);
           setAccount(success.data.Account);
           setProject(success.data["Project/Contract"]);
           setEmpid(success.data["Emp ID"]);
@@ -158,8 +157,10 @@ function EmployeeForm() {
           setCurrency(success.data.Currency);
           if (success.data.Currency === "Indian Rupee") {
             setCurrencySymbol("₹");
-          } else {
+          } else if (success.data.Currency === "United States Dollar") {
             setCurrencySymbol("$");
+          } else {
+            setCurrencySymbol("");
           }
         })
         .catch((error) => console.log(error));
@@ -169,8 +170,6 @@ function EmployeeForm() {
   }, []);
 
   const saveEmployee = (e) => {
-    console.log(e);
-    console.log(totalcost);
     e.preventDefault();
     const employee = {
       id,
@@ -258,10 +257,14 @@ function EmployeeForm() {
     } else {
       return (
         <span style={{ fontSize: "18px" }}>
-          Are you sure you want to Book a ticket?
+          Are you sure you want to raise the travel request?
         </span>
       );
     }
+  };
+
+  const goBack = () => {
+    navigate("/employeesection");
   };
   const getdetails = (id) => {
     console.log(id);
@@ -401,18 +404,10 @@ function EmployeeForm() {
   const currencySymbolset = () => {
     if (currency === "Indian Rupee") {
       setCurrencySymbol("₹");
-      setHotac("");
-      setPerdium("");
-      setFlight("");
-      setOthercost("");
-      setTotalcost("");
-    } else {
+    } else if (currency === "United States Dollar") {
       setCurrencySymbol("$");
-      setHotac("");
-      setPerdium("");
-      setFlight("");
-      setOthercost("");
-      setTotalcost("");
+    } else {
+      setCurrencySymbol("");
     }
   };
   useEffect(() => {
@@ -426,15 +421,13 @@ function EmployeeForm() {
       let costtoConvert =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
       let costinDollar = rupeetoDollar(costtoConvert);
-      // cost in dollar error
       setTotalcost(costinDollar.toString());
       setTotalcostindollar("$" + totalcost);
-      // setHotacindollar(rupeetoDollar(Number(hotac)).toString());
       setHotacindollar(currencySymbol + hotac);
       setPerdiumindollar(currencySymbol + perdiem);
       setFlightinDollar(currencySymbol + flight);
       setOthercostindollar(currencySymbol + othercost);
-    } else {
+    } else if (currency === "United States Dollar") {
       let totalCostindollar =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
       let roundedCost = (Math.round(totalCostindollar * 1000) / 1000).toFixed(
@@ -446,6 +439,12 @@ function EmployeeForm() {
       setPerdiumindollar(currencySymbol + perdiem);
       setOthercostindollar(currencySymbol + othercost);
       setFlightinDollar(currencySymbol + flight);
+    } else {
+      setTotalcostindollar("");
+      setHotacindollar("");
+      setPerdiumindollar("");
+      setOthercostindollar("");
+      setFlightinDollar("");
     }
   };
   return (
@@ -482,7 +481,7 @@ function EmployeeForm() {
             <div className="row section p-2 mt-2 mb-3">
               <div class="form-group mb-3 col-md-6 col-sm-12">
                 <label for="inputPassword">
-                  Emp ID
+                  Employee ID
                   <span style={{ color: "red", marginLeft: "5px" }}>*</span>
                 </label>
 
@@ -495,7 +494,7 @@ function EmployeeForm() {
                   type="text"
                   class="form-control"
                   id="empid"
-                  placeholder="Emp ID"
+                  placeholder="Employee ID"
                 />
                 <span style={{ color: "red" }}>{empidnav}</span>
                 <span style={{ color: "red" }}>{empidspan}</span>
@@ -508,6 +507,7 @@ function EmployeeForm() {
 
                 <input
                   type="text"
+                  placeholder="Account"
                   value={account}
                   onChange={(e) => setAccount(e.target.value)}
                   class="form-control"
@@ -525,6 +525,7 @@ function EmployeeForm() {
                   value={project}
                   onChange={(e) => setProject(e.target.value)}
                   type="text"
+                  placeholder="Project/Contract"
                   class="form-control"
                   id="project"
                   onKeyUp={() => keyupvalidation()}
@@ -533,11 +534,12 @@ function EmployeeForm() {
               </div>
               <div class="form-group  col-md-6 col-sm-12 mb-3">
                 <label for="empname">
-                  Emp Name
+                  Employee Name
                   <span style={{ color: "red", marginLeft: "5px" }}>*</span>
                 </label>
                 <input
                   value={empname}
+                  placeholder="Employee Name"
                   onChange={(e) => setEmpname(e.target.value)}
                   type="text"
                   class="form-control"
@@ -799,7 +801,9 @@ function EmployeeForm() {
                 </InputGroup>
               </div>
               <div class="form-group col-md-6 col-sm-12">
-                <Form.Label htmlFor="hotaccost">Hotac Cost</Form.Label>
+                <Form.Label htmlFor="hotaccost">
+                  Hotel Accommodation Cost
+                </Form.Label>
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
@@ -807,12 +811,12 @@ function EmployeeForm() {
                     onChange={(e) => setHotac(e.target.value)}
                     class="form-control"
                     id="hotaccost"
-                    placeholder="Hotac cost"
+                    placeholder="Hotel accommodation cost"
                   />
                 </InputGroup>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
-                <Form.Label htmlFor="perdiumcost">Perdium Cost</Form.Label>
+                <Form.Label htmlFor="perdiumcost">Perdiem Cost</Form.Label>
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
@@ -820,7 +824,7 @@ function EmployeeForm() {
                     onChange={(e) => setPerdium(e.target.value)}
                     class="form-control"
                     id="perdiumcost"
-                    placeholder="Perdium cost"
+                    placeholder="Perdiem cost"
                   />
                 </InputGroup>
               </div>
@@ -869,12 +873,10 @@ function EmployeeForm() {
             </div>
           </div>
 
-          <div class="form-group row mt-3">
-            <div
-              className="mb-5"
-              style={{ display: "flex", justifyContent: "space-around" }}
-            >
+          <div class="form-group row">
+            <div className="col-md-6 col-sm-12 mt-3 ">
               <Button
+                className="mb-3"
                 variant="primary"
                 onClick={() => {
                   validation();
@@ -882,13 +884,34 @@ function EmployeeForm() {
               >
                 Submit
               </Button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => reset()}
+            </div>
+            <div className="col-md-6 col-sm-12 mt-3">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
               >
-                Clear All
-              </button>
+                <Button
+                  className="mb-3"
+                  variant="primary"
+                  onClick={() => {
+                    reset();
+                  }}
+                >
+                  Clear All
+                </Button>
+                <Button
+                  className="mb-3"
+                  variant="primary"
+                  onClick={() => {
+                    goBack();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
         </div>
