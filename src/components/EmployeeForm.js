@@ -162,6 +162,7 @@ function EmployeeForm() {
           } else {
             setCurrencySymbol("");
           }
+          disable();
         })
         .catch((error) => console.log(error));
     } else {
@@ -220,25 +221,43 @@ function EmployeeForm() {
     redirect();
   };
   const reset = () => {
-    setAccount("");
-    setProject("");
-    setEmpid("");
-    setEmpname("");
-    setPurposeoftravel("");
-    setCountryfrom("");
-    setStatefrom("");
-    setCityfrom("");
-    setCountryto("");
-    setStateto("");
-    setCityto("");
-    setDatefrom("");
-    setDateto("");
-    setFlight("");
-    setHotac("");
-    setPerdium("");
-    setOthercost("");
-    setTotalcost("");
-    setcommentsifany("");
+    if (bid) {
+      setPurposeoftravel("");
+      setCountryfrom("");
+      setStatefrom("");
+      setCityfrom("");
+      setCountryto("");
+      setStateto("");
+      setCityto("");
+      setDatefrom("");
+      setDateto("");
+      setFlight("");
+      setHotac("");
+      setPerdium("");
+      setOthercost("");
+      setTotalcost("");
+      setcommentsifany("");
+    } else {
+      setAccount("");
+      setProject("");
+      setEmpid("");
+      setEmpname("");
+      setPurposeoftravel("");
+      setCountryfrom("");
+      setStatefrom("");
+      setCityfrom("");
+      setCountryto("");
+      setStateto("");
+      setCityto("");
+      setDatefrom("");
+      setDateto("");
+      setFlight("");
+      setHotac("");
+      setPerdium("");
+      setOthercost("");
+      setTotalcost("");
+      setcommentsifany("");
+    }
   };
   const title = () => {
     if (bid) {
@@ -446,6 +465,12 @@ function EmployeeForm() {
       setOthercostindollar("");
       setFlightinDollar("");
     }
+  };
+  const disable = () => {
+    document.getElementById("empid").disabled = true;
+    document.getElementById("account").disabled = true;
+    document.getElementById("project").disabled = true;
+    document.getElementById("empname").disabled = true;
   };
   return (
     <>
@@ -772,7 +797,16 @@ function EmployeeForm() {
               <div className="row">
                 <div class="form-group mb-3 col-md-3 col-sm-12">
                   <label for="currencyselection">Choose your currency:</label>
-                  <Form.Select onChange={(e) => setCurrency(e.target.value)}>
+                  <Form.Select
+                    onChange={(e) => {
+                      setCurrency(e.target.value);
+                      setFlight("");
+                      setHotac("");
+                      setPerdium("");
+                      setOthercost("");
+                      setTotalcost("");
+                    }}
+                  >
                     <option>{currency}</option>
                     <option value="Indian Rupee" key="Indian Rupee">
                       Indian Rupee
@@ -792,6 +826,7 @@ function EmployeeForm() {
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
+                    type="number"
                     value={flight}
                     onChange={(e) => setFlight(e.target.value)}
                     class="form-control"
@@ -807,6 +842,7 @@ function EmployeeForm() {
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
+                    type="number"
                     value={hotac}
                     onChange={(e) => setHotac(e.target.value)}
                     class="form-control"
@@ -820,6 +856,7 @@ function EmployeeForm() {
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
+                    type="number"
                     value={perdiem}
                     onChange={(e) => setPerdium(e.target.value)}
                     class="form-control"
@@ -833,6 +870,7 @@ function EmployeeForm() {
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
+                    type="number"
                     value={othercost}
                     onChange={(e) => setOthercost(e.target.value)}
                     class="form-control"
