@@ -67,6 +67,7 @@ function Tablecomponent({
                 <th scope="col">Other Cost</th>
                 <th scope="col">Total Cost</th>
                 <th scope="col">Comments if Any</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
 

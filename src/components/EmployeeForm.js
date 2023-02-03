@@ -40,6 +40,9 @@ function EmployeeForm() {
   const [countryto, setCountryto] = useState("");
   const [stateto, setStateto] = useState("");
   const [cityto, setCityto] = useState("");
+  const [accountspan, setAccountspan] = useState("");
+  const [projectspan, setProjectspan] = useState("");
+  const [empnamespan, setEmpnamespan] = useState("");
   const [countryfromspan, setCountryfromspan] = useState("");
   const [statefromspan, setStatefromspan] = useState("");
   const [cityfromspan, setCityfromspan] = useState("");
@@ -118,7 +121,6 @@ function EmployeeForm() {
       setId(bid);
       Employeeservices.getEmployeebyid(bid)
         .then((success) => {
-          console.log(success);
           setAccount(success.data.Account);
           setProject(success.data["Project/Contract"]);
           setEmpid(success.data["Emp ID"]);
@@ -155,9 +157,12 @@ function EmployeeForm() {
           setCurrency(success.data.Currency);
           if (success.data.Currency === "Indian Rupee") {
             setCurrencySymbol("₹");
-          } else {
+          } else if (success.data.Currency === "United States Dollar") {
             setCurrencySymbol("$");
+          } else {
+            setCurrencySymbol("");
           }
+          disable();
         })
         .catch((error) => console.log(error));
     } else {
@@ -166,8 +171,6 @@ function EmployeeForm() {
   }, []);
 
   const saveEmployee = (e) => {
-    console.log(e);
-    console.log(totalcost);
     e.preventDefault();
     const employee = {
       id,
@@ -206,7 +209,6 @@ function EmployeeForm() {
     setCountryto("");
     setStateto("");
     setCityto("");
-
     setDatefrom("");
     setDateto("");
     setFlight("");
@@ -219,25 +221,43 @@ function EmployeeForm() {
     redirect();
   };
   const reset = () => {
-    setAccount("");
-    setProject("");
-    setEmpid("");
-    setEmpname("");
-    setPurposeoftravel("");
-    setCountryfrom("");
-    setStatefrom("");
-    setCityfrom("");
-    setCountryto("");
-    setStateto("");
-    setCityto("");
-    setDatefrom("");
-    setDateto("");
-    setFlight("");
-    setHotac("");
-    setPerdium("");
-    setOthercost("");
-    setTotalcost("");
-    setcommentsifany("");
+    if (bid) {
+      setPurposeoftravel("");
+      setCountryfrom("");
+      setStatefrom("");
+      setCityfrom("");
+      setCountryto("");
+      setStateto("");
+      setCityto("");
+      setDatefrom("");
+      setDateto("");
+      setFlight("");
+      setHotac("");
+      setPerdium("");
+      setOthercost("");
+      setTotalcost("");
+      setcommentsifany("");
+    } else {
+      setAccount("");
+      setProject("");
+      setEmpid("");
+      setEmpname("");
+      setPurposeoftravel("");
+      setCountryfrom("");
+      setStatefrom("");
+      setCityfrom("");
+      setCountryto("");
+      setStateto("");
+      setCityto("");
+      setDatefrom("");
+      setDateto("");
+      setFlight("");
+      setHotac("");
+      setPerdium("");
+      setOthercost("");
+      setTotalcost("");
+      setcommentsifany("");
+    }
   };
   const title = () => {
     if (bid) {
@@ -256,10 +276,14 @@ function EmployeeForm() {
     } else {
       return (
         <span style={{ fontSize: "18px" }}>
-          Are you sure you want to Book a ticket?
+          Are you sure you want to raise the travel request?
         </span>
       );
     }
+  };
+
+  const goBack = () => {
+    navigate("/employeesection");
   };
   const getdetails = (id) => {
     console.log(id);
@@ -276,6 +300,9 @@ function EmployeeForm() {
             setProject(success.data["Project/Contract"]);
             setEmpname(success.data["Emp Name"]);
             setEmpidnav("");
+            setAccountspan("");
+            setProjectspan("");
+            setEmpnamespan("");
           }
         })
         .catch((error) => {
@@ -288,6 +315,15 @@ function EmployeeForm() {
   const keyupvalidation = () => {
     if (purposeoftravel) {
       setPurposeoftravelspan("");
+    }
+    if (account) {
+      setAccountspan("");
+    }
+    if (project) {
+      setProjectspan("");
+    }
+    if (empname) {
+      setEmpnamespan("");
     }
     if (datefrom) {
       setDatefromspan("");
@@ -316,6 +352,15 @@ function EmployeeForm() {
   };
   const validation = () => {
     empid === "" ? setempidspan("This field is Required") : setempidspan("");
+    account === ""
+      ? setAccountspan("This field is Required")
+      : setAccountspan("");
+    project === ""
+      ? setProjectspan("This field is Required")
+      : setProjectspan("");
+    empname === ""
+      ? setEmpnamespan("This field is Required")
+      : setEmpnamespan("");
     purposeoftravel === ""
       ? setPurposeoftravelspan("This field is Required")
       : setPurposeoftravelspan("");
@@ -346,6 +391,9 @@ function EmployeeForm() {
       : setDatetospan("");
     if (
       empid !== "" &&
+      account !== "" &&
+      project !== "" &&
+      empname !== "" &&
       purposeoftravel !== "" &&
       countryfrom !== "" &&
       statefrom !== "" &&
@@ -375,18 +423,10 @@ function EmployeeForm() {
   const currencySymbolset = () => {
     if (currency === "Indian Rupee") {
       setCurrencySymbol("₹");
-      setHotac("");
-      setPerdium("");
-      setFlight("");
-      setOthercost("");
-      setTotalcost("");
-    } else {
+    } else if (currency === "United States Dollar") {
       setCurrencySymbol("$");
-      setHotac("");
-      setPerdium("");
-      setFlight("");
-      setOthercost("");
-      setTotalcost("");
+    } else {
+      setCurrencySymbol("");
     }
   };
   useEffect(() => {
@@ -400,15 +440,13 @@ function EmployeeForm() {
       let costtoConvert =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
       let costinDollar = rupeetoDollar(costtoConvert);
-      // cost in dollar error
       setTotalcost(costinDollar.toString());
       setTotalcostindollar("$" + totalcost);
-      // setHotacindollar(rupeetoDollar(Number(hotac)).toString());
       setHotacindollar(currencySymbol + hotac);
       setPerdiumindollar(currencySymbol + perdiem);
       setFlightinDollar(currencySymbol + flight);
       setOthercostindollar(currencySymbol + othercost);
-    } else {
+    } else if (currency === "United States Dollar") {
       let totalCostindollar =
         Number(flight) + Number(hotac) + Number(perdiem) + Number(othercost);
       let roundedCost = (Math.round(totalCostindollar * 1000) / 1000).toFixed(
@@ -420,7 +458,19 @@ function EmployeeForm() {
       setPerdiumindollar(currencySymbol + perdiem);
       setOthercostindollar(currencySymbol + othercost);
       setFlightinDollar(currencySymbol + flight);
+    } else {
+      setTotalcostindollar("");
+      setHotacindollar("");
+      setPerdiumindollar("");
+      setOthercostindollar("");
+      setFlightinDollar("");
     }
+  };
+  const disable = () => {
+    document.getElementById("empid").disabled = true;
+    document.getElementById("account").disabled = true;
+    document.getElementById("project").disabled = true;
+    document.getElementById("empname").disabled = true;
   };
   return (
     <>
@@ -456,7 +506,7 @@ function EmployeeForm() {
             <div className="row section p-2 mt-2 mb-3">
               <div class="form-group mb-3 col-md-6 col-sm-12">
                 <label for="inputPassword">
-                  Emp ID
+                  Employee ID
                   <span style={{ color: "red", marginLeft: "5px" }}>*</span>
                 </label>
 
@@ -469,42 +519,59 @@ function EmployeeForm() {
                   type="text"
                   class="form-control"
                   id="empid"
-                  placeholder="Emp ID"
+                  placeholder="Employee ID"
                 />
                 <span style={{ color: "red" }}>{empidnav}</span>
                 <span style={{ color: "red" }}>{empidspan}</span>
               </div>
               <div class="form-group col-md-6 col-sm-12">
-                <label for="inputPassword">Account</label>
+                <label for="inputPassword">
+                  Account
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </label>
 
                 <input
                   type="text"
+                  placeholder="Account"
                   value={account}
                   onChange={(e) => setAccount(e.target.value)}
                   class="form-control"
                   id="account"
+                  onKeyUp={() => keyupvalidation()}
                 />
+                <span style={{ color: "red" }}>{accountspan}</span>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
-                <label for="inputPassword">Project/Contract</label>
-
+                <label for="inputPassword">
+                  Project/Contract
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </label>
                 <input
                   value={project}
                   onChange={(e) => setProject(e.target.value)}
                   type="text"
+                  placeholder="Project/Contract"
                   class="form-control"
                   id="project"
+                  onKeyUp={() => keyupvalidation()}
                 />
+                <span style={{ color: "red" }}>{projectspan}</span>
               </div>
               <div class="form-group  col-md-6 col-sm-12 mb-3">
-                <label for="empname">Emp Name</label>
+                <label for="empname">
+                  Employee Name
+                  <span style={{ color: "red", marginLeft: "5px" }}>*</span>
+                </label>
                 <input
                   value={empname}
+                  placeholder="Employee Name"
                   onChange={(e) => setEmpname(e.target.value)}
                   type="text"
                   class="form-control"
                   id="empname"
+                  onKeyUp={() => keyupvalidation()}
                 />
+                <span style={{ color: "red" }}>{empnamespan}</span>
               </div>
             </div>
           </div>
@@ -730,7 +797,16 @@ function EmployeeForm() {
               <div className="row">
                 <div class="form-group mb-3 col-md-3 col-sm-12">
                   <label for="currencyselection">Choose your currency:</label>
-                  <Form.Select onChange={(e) => setCurrency(e.target.value)}>
+                  <Form.Select
+                    onChange={(e) => {
+                      setCurrency(e.target.value);
+                      setFlight("");
+                      setHotac("");
+                      setPerdium("");
+                      setOthercost("");
+                      setTotalcost("");
+                    }}
+                  >
                     <option>{currency}</option>
                     <option value="Indian Rupee" key="Indian Rupee">
                       Indian Rupee
@@ -750,6 +826,7 @@ function EmployeeForm() {
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
+                    type="number"
                     value={flight}
                     onChange={(e) => setFlight(e.target.value)}
                     class="form-control"
@@ -759,28 +836,32 @@ function EmployeeForm() {
                 </InputGroup>
               </div>
               <div class="form-group col-md-6 col-sm-12">
-                <Form.Label htmlFor="hotaccost">Hotac Cost</Form.Label>
+                <Form.Label htmlFor="hotaccost">
+                  Hotel Accommodation Cost
+                </Form.Label>
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
+                    type="number"
                     value={hotac}
                     onChange={(e) => setHotac(e.target.value)}
                     class="form-control"
                     id="hotaccost"
-                    placeholder="Hotac cost"
+                    placeholder="Hotel accommodation cost"
                   />
                 </InputGroup>
               </div>
               <div class="form-group mb-3 col-md-6 col-sm-12">
-                <Form.Label htmlFor="perdiumcost">Perdium Cost</Form.Label>
+                <Form.Label htmlFor="perdiumcost">Perdiem Cost</Form.Label>
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
+                    type="number"
                     value={perdiem}
                     onChange={(e) => setPerdium(e.target.value)}
                     class="form-control"
                     id="perdiumcost"
-                    placeholder="Perdium cost"
+                    placeholder="Perdiem cost"
                   />
                 </InputGroup>
               </div>
@@ -789,6 +870,7 @@ function EmployeeForm() {
                 <InputGroup>
                   <InputGroup.Text>{currencySymbol}</InputGroup.Text>
                   <Form.Control
+                    type="number"
                     value={othercost}
                     onChange={(e) => setOthercost(e.target.value)}
                     class="form-control"
@@ -829,12 +911,10 @@ function EmployeeForm() {
             </div>
           </div>
 
-          <div class="form-group row mt-3">
-            <div
-              className="mb-5"
-              style={{ display: "flex", justifyContent: "space-around" }}
-            >
+          <div class="form-group row">
+            <div className="col-md-6 col-sm-12 mt-3 ">
               <Button
+                className="mb-3"
                 variant="primary"
                 onClick={() => {
                   validation();
@@ -842,13 +922,34 @@ function EmployeeForm() {
               >
                 Submit
               </Button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => reset()}
+            </div>
+            <div className="col-md-6 col-sm-12 mt-3">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
               >
-                Clear All
-              </button>
+                <Button
+                  className="mb-3"
+                  variant="primary"
+                  onClick={() => {
+                    reset();
+                  }}
+                >
+                  Clear All
+                </Button>
+                <Button
+                  className="mb-3"
+                  variant="primary"
+                  onClick={() => {
+                    goBack();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
         </div>
