@@ -66,6 +66,7 @@ function Employee() {
     getallEmployees();
     employeeidvalidation(searchvalue);
   }, [searchvalue]);
+
   const employeeidvalidation = (id) => {
     if (id.length > 0) {
       Employeeservices.getEmployeebyempid(id)
@@ -113,6 +114,7 @@ function Employee() {
             <span style={{ color: "red" }}>{empidspan}</span>
           </div>
           <button
+            style={{ marginLeft: "7px" }}
             type="button"
             class="btn btn-outline-primary"
             onClick={() => redirect()}
