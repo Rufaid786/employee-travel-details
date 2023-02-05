@@ -5,6 +5,7 @@ import Employee from "./components/Employee";
 import EmployeeForm from "./components/EmployeeForm";
 
 import Navbar from "./components/Navbar";
+import Pmoauthorisation from "./components/Pmoauthorisation";
 import POM from "./components/POM";
 
 function App() {
@@ -17,7 +18,10 @@ function App() {
           <Route path="/employeesection" element={<Employee />} />
           <Route path="/employeeform" element={<EmployeeForm />} />
           <Route path="/pmosection" element={<POM />} />
-          <Route path="/pmologinform" element={<Csvform />} />
+          <Route
+            path="/pmoauthorisationandloginsection"
+            element={<Pmoauthorisation />}
+          />
         </Routes>
       </Router>
     </div>

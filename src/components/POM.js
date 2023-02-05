@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { atom, useRecoilState } from "recoil";
 import Employeeservices from "../Services/Employeeservices";
-
+export const authenticationStatus = atom({
+  key: "authenticationstatus",
+  default: false,
+});
 function POM() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [span, setSpan] = useState("");
   const navigate = useNavigate();
+  const [isauthenticated, setAuthenticated] =
+    useRecoilState(authenticationStatus);
   const changepage = () => {
-    navigate("/pmologinform");
+    navigate("/pmoauthorisationandloginsection");
   };
   const validation = () => {
     Employeeservices.getPmoValidation(email, password)
@@ -16,6 +22,7 @@ function POM() {
         if (success.data === "Login Success") {
           setSpan("");
           changepage();
+          setAuthenticated(true);
         } else {
           setSpan(success.data);
         }
