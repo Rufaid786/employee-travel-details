@@ -9,5 +9,10 @@ The user stories taken care are:
   <li>As a PMO, I should be able to make out if the records were already downloaded and if there were any updates made to the record post download</li>
   </ul>
   
-  
+  <h2>Technologies used</h2>
+  <ul>
+  <li>Recat js</li>
+  <li>Bootstrap</li>
+  <li>AWS(API Gateway,Lambda,DynamoDB)</li>
+  </ul>
 <img src="public/Diagram.png" width="2000">
