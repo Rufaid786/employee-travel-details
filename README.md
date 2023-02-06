@@ -25,3 +25,10 @@ The lambda code which was used in the backend is downloaded in zip format.This z
 Please see the below Repository for the backend code: <br>
 https://github.com/Rufaid786/Employee-travel-details-backend_pythonAWSLambdacode <br>
 As mentioned,the backend code which we did in the lambda is downloaded in zip format.It is then uploaded to the above mentioned repository.
+In order to use the code in above repository
+<ul>
+  <li>Clone the repository</li>
+  <li>Convert the code into a zip format</li>
+  <li>Upload it into your AWS lambda</li>
+</ul>
+<h2></h2>
