@@ -18,7 +18,7 @@ The user stories taken care are:
 <img src="public/Diagram.png" width="2000">
 <p>The front end code is hosted in AWS S3.When we make an api call,the lambda function gets triggered and it will perform the operations we needed.The lambda function which we use has dynamodb access.All the travel request datas are stored in dynamodb.</p>
 
-<h2>Backend Lambda Code</h2>
+<h2>Instruction for users and Backend Lambda Code</h2>
 The lambda code which was used in the backend is downloaded in zip format.This zip format can be uploaded to the required AWS account for performing the operation.But please make ensure that your lambda function has proper dynamodb access and make sure to set the API as well.Accordingly,please update the API in yout front end code.
 <br>
 <br>
