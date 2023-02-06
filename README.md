@@ -10,4 +10,4 @@ The user stories taken care are:
   </ul>
   
   
-<img src="public/favicon.icon" width="100">
+<img src="public/favicon.ico" width="100">
