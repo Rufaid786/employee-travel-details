@@ -31,4 +31,5 @@ In order to use the code in above repository
   <li>Convert the code into a zip format</li>
   <li>Upload it into your AWS lambda</li>
 </ul>
-<h2></h2>
+<h2>Website</h2>
+<span>Please checkout the website on:<br>http://www.employee-travel-details.com.s3-website.ap-south-1.amazonaws.com</span>
