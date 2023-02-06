@@ -1,2 +1,4 @@
 <h1>Employee Travel Details</h1>
-This is the website regarding the travel details of an employee in an organisation.The website allows employees to add their travel details and PMO to access the details of the employee.
+For any travels being done in a corporate company, the employee need to take approval on the budget from the Senior VP of the department. The PMO role of respective projects need to gather the data for their projects from different employees in the project and share it in the form of an excel sheet. The user stories to take care are:
+![image](https://user-images.githubusercontent.com/44583069/216900995-cd33398c-2f3a-45e7-be52-213becd2b7b8.png)
+
