@@ -22,6 +22,6 @@ The user stories taken care are:
 The lambda code which was used in the backend is downloaded in zip format.This zip format can be uploaded to the required AWS account for performing the operation.But please make ensure that your lambda function has proper dynamodb access and make sure to set the API as well.Accordingly,please update the API in yout front end code.
 <br>
 <br>
-Please see the below Repository for the backend code:
-https://github.com/Rufaid786/Employee-travel-details-backend_pythonAWSLambdacode
+Please see the below Repository for the backend code: <br>
+https://github.com/Rufaid786/Employee-travel-details-backend_pythonAWSLambdacode <br>
 As mentioned,the backend code which we did in the lambda is downloaded in zip format.It is then uploaded to the above mentioned repository.
