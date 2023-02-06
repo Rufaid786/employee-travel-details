@@ -11,8 +11,9 @@ The user stories taken care are:
   
   <h2>Technologies used</h2>
   <ul>
-  <li>Recat js</li>
+  <li>React js</li>
   <li>Bootstrap</li>
-  <li>AWS(API Gateway,Lambda,DynamoDB)</li>
+  <li>AWS(S3,API Gateway,Lambda,DynamoDB)</li>
   </ul>
 <img src="public/Diagram.png" width="2000">
+<p>The front end code is hosted in AWS S3.When we make an api call,the lambda function gets triggered and it will perform the operations we needed.The lambda function which we use has dynamodb access.All the travel request datas are stored in dynamodb.</p>
