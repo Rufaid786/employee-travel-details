@@ -10,4 +10,4 @@ The user stories taken care are:
   </ul>
   
   
-<img src="public/Diagram.png" width="100" height="100">
+<img src="public/Diagram.png" width="2000" height="100">
