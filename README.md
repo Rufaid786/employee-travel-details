@@ -1,4 +1,5 @@
 <h1>Employee Travel Details</h1>
+<h2>About</h2>
 For any travels being done in a corporate company, the employee need to take approval on the budget from the Senior VP of the department. The PMO role of respective projects need to gather the data for their projects from different employees in the project and share it in the form of an excel sheet.This project is a solution for it.
 The user stories taken care are:
 <ul>
@@ -7,5 +8,6 @@ The user stories taken care are:
   <li>As an employee, I want to update the budget details later on for the record already inserted</li>
   <li>As a PMO, I should be able to make out if the records were already downloaded and if there were any updates made to the record post download</li>
   </ul>
+  
   
 
